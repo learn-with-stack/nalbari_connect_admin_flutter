@@ -25,6 +25,11 @@ class App extends ConsumerWidget {
       locale: context.locale,
       builder: (context, child) {
         Widget current = child!;
+        current = GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: current,
+        );
         current = SkeletonWrapper(child: current);
         current = SessionListenerWrapper(child: current);
         return current;

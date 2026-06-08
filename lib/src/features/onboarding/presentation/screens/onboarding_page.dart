@@ -1,4 +1,4 @@
-﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
+import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
 import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
 class OnboardingPage extends ConsumerWidget {
@@ -10,127 +10,45 @@ class OnboardingPage extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(18.w, 36.h, 18.w, 22.h),
           children: [
-            SizedBox(
-              height: 5.h,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [cs.primary, const Color(0xFF056E00), cs.primary]),
-                ),
-              ),
+            Center(child: AppLogoMark(size: 104.w)),
+            SizedBox(height: 20.h),
+            Text(
+              'app.name'.tr(),
+              textAlign: TextAlign.center,
+              style: context.textTheme.headlineMedium?.copyWith(color: cs.primary, fontWeight: FontWeight.w900),
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16.w, 28.h, 16.w, 24.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: 10.h),
-                    Center(child: AppLogoMark(size: 126.w)),
-                    SizedBox(height: 22.h),
-                    Text(
-                      'app.name'.tr(),
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.headlineLarge?.copyWith(
-                        color: cs.primary,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      'onboarding.title'.tr(),
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      'onboarding.subtitle'.tr(),
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                    ),
-                    SizedBox(height: 2.h),
-                    Text(
-                      'নলবাৰী এডমিন কাৰ্যালয় ডেশ্ববৰ্ড',
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                    ),
-                    SizedBox(height: 2.h),
-                    Text(
-                      'नलबाड़ी एडमिन कार्यालय डैशबोर्ड',
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                    ),
-                    SizedBox(height: 34.h),
-                    const _SectionLabel(),
-                    SizedBox(height: 14.h),
-                    const _LanguageCard(
-                      title: 'অসমীয়া',
-                      subtitle: 'Assamese',
-                      locale: Locale('as'),
-                    ),
-                    SizedBox(height: 10.h),
-                    const _LanguageCard(
-                      title: 'English',
-                      subtitle: 'English',
-                      locale: Locale('en'),
-                    ),
-                    SizedBox(height: 10.h),
-                    const _LanguageCard(
-                      title: 'हिन्दी',
-                      subtitle: 'Hindi',
-                      locale: Locale('hi'),
-                    ),
-                    SizedBox(height: 26.h),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF9933),
-                        foregroundColor: const Color(0xFF2E1500),
-                        minimumSize: Size.fromHeight(58.h),
-                      ),
-                      onPressed: () async {
-                        await ref.read(appAuthProvider.notifier).completeLanguageSetup();
-                        if (context.mounted) context.go(AppRoutes.login);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('onboarding.start'.tr()),
-                              SizedBox(width: 8.w),
-                              const Icon(Icons.arrow_forward),
-                            ],
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            'আৰম্ভ কৰক  |  शुरू करें',
-                            style: context.textTheme.labelSmall?.copyWith(color: const Color(0xFF2E1500).withValues(alpha: 0.75)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 22.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const _TrustChip(icon: Icons.verified_user_outlined, label: 'High Trust'),
-                        SizedBox(width: 14.w),
-                        const _TrustChip(icon: Icons.security_outlined, label: 'Encrypted'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            SizedBox(height: 8.h),
+            Text(
+              'onboarding.subtitle'.tr(),
+              textAlign: TextAlign.center,
+              style: context.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 14.h),
-              child: Text(
-                'Copyright 2024 Nalbari Admin | নলবাৰী এডমিন',
-                textAlign: TextAlign.center,
-                style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-              ),
+            SizedBox(height: 30.h),
+            Text('onboarding.language'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
+            SizedBox(height: 12.h),
+            const _LanguageCard(title: 'English', subtitle: 'English', locale: Locale('en')),
+            SizedBox(height: 10.h),
+            const _LanguageCard(title: '???????', subtitle: 'Assamese', locale: Locale('as')),
+            SizedBox(height: 10.h),
+            const _LanguageCard(title: '??????', subtitle: 'Hindi', locale: Locale('hi')),
+            SizedBox(height: 28.h),
+            FilledButton.icon(
+              style: FilledButton.styleFrom(minimumSize: Size.fromHeight(56.h)),
+              onPressed: () async {
+                await ref.read(appAuthProvider.notifier).completeLanguageSetup();
+                if (context.mounted) context.go(AppRoutes.login);
+              },
+              icon: const Icon(Icons.arrow_forward),
+              label: Text('onboarding.start'.tr()),
+            ),
+            SizedBox(height: 20.h),
+            Text(
+              'auth.secured'.tr(),
+              textAlign: TextAlign.center,
+              style: context.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant),
             ),
           ],
         ),
@@ -139,37 +57,8 @@ class OnboardingPage extends ConsumerWidget {
   }
 }
 
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: Divider(color: context.colors.outlineVariant)),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Text(
-            'Language / ভাষা / भाषा',
-            style: context.textTheme.labelSmall?.copyWith(
-              color: context.colors.onSurfaceVariant,
-              letterSpacing: 1.2,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-        Expanded(child: Divider(color: context.colors.outlineVariant)),
-      ],
-    );
-  }
-}
-
 class _LanguageCard extends StatelessWidget {
-  const _LanguageCard({
-    required this.title,
-    required this.subtitle,
-    required this.locale,
-  });
+  const _LanguageCard({required this.title, required this.subtitle, required this.locale});
 
   final String title;
   final String subtitle;
@@ -188,68 +77,29 @@ class _LanguageCard extends StatelessWidget {
       borderRadius: AppBorders.card,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: cs.surfaceContainerLowest,
+          color: selected ? cs.primaryContainer.withValues(alpha: 0.22) : cs.surfaceContainerLowest,
           borderRadius: AppBorders.card,
-          border: Border.all(
-            color: selected ? const Color(0xFFFF9933) : cs.outlineVariant,
-            width: selected ? 2 : 1,
-          ),
-          boxShadow: selected
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFFFF9933).withValues(alpha: 0.16),
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
-                  ),
-                ]
-              : null,
+          border: Border.all(color: selected ? cs.primary : cs.outlineVariant, width: selected ? 2 : 1),
         ),
         child: Padding(
-          padding: EdgeInsets.all(18.w),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
+                    Text(title, style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
                     SizedBox(height: 3.h),
-                    Text(
-                      selected ? 'settings.selected'.tr() : subtitle,
-                      style: context.textTheme.labelSmall?.copyWith(
-                        color: selected ? const Color(0xFFFF9933) : cs.onSurfaceVariant,
-                        fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                      ),
-                    ),
+                    Text(selected ? 'settings.selected'.tr() : subtitle, style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
                   ],
                 ),
               ),
-              Icon(
-                selected ? Icons.check_circle : Icons.circle_outlined,
-                color: selected ? const Color(0xFFFF9933) : cs.outlineVariant,
-              ),
+              Icon(selected ? Icons.check_circle : Icons.circle_outlined, color: selected ? cs.primary : cs.outlineVariant),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TrustChip extends StatelessWidget {
-  const _TrustChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: const Color(0xFF056E00), size: 18.sp),
-        SizedBox(width: 5.w),
-        Text(label, style: context.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w800)),
-      ],
     );
   }
 }

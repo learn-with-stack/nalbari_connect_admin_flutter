@@ -16,8 +16,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  final bool _obscurePassword = true;
+  final bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -56,8 +56,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       obscurePassword: _obscurePassword,
       obscureConfirmPassword: _obscureConfirmPassword,
       isLoading: isLoading,
-      onToggleObscure: () => setState(() => _obscurePassword = !_obscurePassword),
-      onToggleConfirmObscure: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+      onToggleObscure: () {},
+      onToggleConfirmObscure: () {},
       onSignup: handleSignup,
       cs: cs,
       tt: tt,

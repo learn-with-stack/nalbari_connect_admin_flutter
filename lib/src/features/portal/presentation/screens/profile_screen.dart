@@ -1,5 +1,4 @@
 ﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect_admin/src/features/portal/data/models/portal_models.dart';
 import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/fake_api_controls_provider.dart';
 import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/portal_provider.dart';
 import 'package:nalbari_connect_admin/src/features/settings/presentation/providers/app_settings_provider.dart';
@@ -11,7 +10,6 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(appAuthProvider);
-    final portal = ref.watch(portalControllerProvider);
     final user = auth.user;
 
     return Scaffold(
@@ -19,73 +17,66 @@ class ProfileScreen extends ConsumerWidget {
       body: ListView(
         padding: EdgeInsets.all(20.w),
         children: [
-          Center(child: AppLogoMark(size: 72.w)),
-          SizedBox(height: 12.h),
-          Text(
-            user?.name ?? 'User',
-            textAlign: TextAlign.center,
-            style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-          ),
-          Text(
-            '+91 ${user?.phone ?? ''}',
-            textAlign: TextAlign.center,
-            style: context.textTheme.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant),
-          ),
-          SizedBox(height: 10.h),
-          Center(
-            child: Chip(
-              avatar: Icon(
-                user?.role.name == 'admin' ? Icons.admin_panel_settings_outlined : Icons.person_outline,
-                size: 18.sp,
+          Card(
+            color: context.colors.surfaceContainerLowest,
+            child: Padding(
+              padding: EdgeInsets.all(18.w),
+              child: Column(
+                children: [
+                  AppLogoMark(size: 72.w),
+                  SizedBox(height: 12.h),
+                  Text(
+                    user?.name ?? 'profile.admin_user'.tr(),
+                    textAlign: TextAlign.center,
+                    style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    '+91 ${user?.phone ?? '9999999999'}',
+                    textAlign: TextAlign.center,
+                    style: context.textTheme.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant),
+                  ),
+                  SizedBox(height: 10.h),
+                  Chip(
+                    avatar: Icon(Icons.admin_panel_settings_outlined, size: 18.sp),
+                    label: Text('profile.admin_role'.tr()),
+                  ),
+                ],
               ),
-              label: Text((user?.role.name ?? 'citizen').toUpperCase()),
             ),
           ),
-          SizedBox(height: 22.h),
+          SizedBox(height: 18.h),
           _ProfileLink(icon: Icons.settings_outlined, label: 'profile.settings'.tr(), route: AppRoutes.settings),
           _ProfileLink(icon: Icons.info_outline, label: 'profile.about'.tr(), route: AppRoutes.about),
           _ProfileLink(icon: Icons.help_outline, label: 'profile.faq'.tr(), route: AppRoutes.faq),
           _ProfileLink(icon: Icons.privacy_tip_outlined, label: 'profile.privacy'.tr(), route: AppRoutes.privacy),
-          Card(
-            color: context.colors.surface,
-            child: ListTile(
-              leading: const Icon(Icons.logout_outlined),
-              title: Text('home.logout'.tr()),
-              onTap: () async {
-                await ref.read(appAuthProvider.notifier).logout();
-                if (context.mounted) context.showSuccessSnackBar('profile.logout_success'.tr());
-              },
-            ),
-          ),
-          SizedBox(height: 18.h),
-          Text('profile.appointments'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-          SizedBox(height: 8.h),
-          if (portal.appointments.isEmpty)
-            const AppEmptyState(title: 'No appointments yet')
-          else
-            for (final appointment in portal.appointments.take(4))
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(appointment.reason),
-                subtitle: Text('${appointment.time} - ${appointment.status.name}'),
-                leading: const Icon(Icons.calendar_month_outlined),
-              ),
           SizedBox(height: 12.h),
-          Text('profile.complaints'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-          SizedBox(height: 8.h),
-          if (portal.complaints.isEmpty)
-            const AppEmptyState(title: 'No complaints yet')
-          else
-            for (final complaint in portal.complaints.take(4))
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text('${complaint.areaType == AreaType.ward ? 'Ward' : 'Panchayat'} ${complaint.areaNumber}'),
-                subtitle: Text(complaint.description, maxLines: 2, overflow: TextOverflow.ellipsis),
-                leading: const Icon(Icons.report_problem_outlined),
-              ),
+          OutlinedButton.icon(
+            onPressed: () => _confirmLogout(context, ref),
+            icon: const Icon(Icons.logout_outlined),
+            label: Text('home.logout'.tr()),
+            style: OutlinedButton.styleFrom(foregroundColor: context.colors.error, side: BorderSide(color: context.colors.error)),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('profile.logout_title'.tr()),
+        content: Text('profile.logout_message'.tr()),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text('common.cancel'.tr())),
+          FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text('home.logout'.tr())),
+        ],
+      ),
+    );
+    if (shouldLogout != true) return;
+    await ref.read(appAuthProvider.notifier).logout();
+    if (context.mounted) context.showSuccessSnackBar('profile.logout_success'.tr());
   }
 }
 
@@ -99,7 +90,7 @@ class _ProfileLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: context.colors.surface,
+      color: context.colors.surfaceContainerLowest,
       child: ListTile(
         leading: Icon(icon),
         title: Text(label),
@@ -124,7 +115,7 @@ class SettingsScreen extends ConsumerWidget {
         padding: EdgeInsets.all(20.w),
         children: [
           Card(
-            color: context.colors.surface,
+            color: context.colors.surfaceContainerLowest,
             child: ListTile(
               leading: AppLogoMark(size: 42.w),
               title: Text('app.name'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
@@ -215,9 +206,9 @@ class SettingsScreen extends ConsumerWidget {
                 ref.invalidate(newsProvider);
                 ref.read(portalControllerProvider.notifier).load();
                 final message = switch (mode) {
-                  FakeApiFailureMode.none => 'Fake API restored. GET/POST/PATCH will work.',
-                  FakeApiFailureMode.offline => 'Fake API is offline. Requests will show network error.',
-                  FakeApiFailureMode.serverError => 'Fake API will return server error.',
+                  FakeApiFailureMode.none => 'settings.api_working_message'.tr(),
+                  FakeApiFailureMode.offline => 'settings.api_offline_message'.tr(),
+                  FakeApiFailureMode.serverError => 'settings.api_server_message'.tr(),
                 };
                 context.showSuccessSnackBar(message);
               },
@@ -225,11 +216,11 @@ class SettingsScreen extends ConsumerWidget {
           ),
           SizedBox(height: 14.h),
           Card(
-            color: context.colors.surface,
+            color: context.colors.surfaceContainerLowest,
             child: ListTile(
               leading: const Icon(Icons.http_outlined),
               title: Text('settings.api_base_url'.tr()),
-              subtitle: Text(dotenv.get('API_BASE_URL', fallback: 'Fake API enabled')),
+              subtitle: Text(dotenv.get('API_BASE_URL', fallback: 'settings.fake_api_enabled'.tr())),
             ),
           ),
           ListTile(

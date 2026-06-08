@@ -39,7 +39,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 TextButton.icon(
                   onPressed: () => context.go(AppRoutes.login),
                   icon: const Icon(Icons.arrow_back),
-                  label: const Text('Change Number'),
+                  label: Text('auth.change_number'.tr()),
                   style: TextButton.styleFrom(alignment: Alignment.centerLeft),
                 ),
                 SizedBox(height: 30.h),
@@ -84,7 +84,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                               ),
                             ),
                             SizedBox(height: 12.h),
-                            Text('OTP sent to $masked', textAlign: TextAlign.center, style: context.textTheme.titleMedium),
+                            Text('${'auth.otp_sent_to'.tr()} $masked', textAlign: TextAlign.center, style: context.textTheme.titleMedium),
                             SizedBox(height: 28.h),
                             TextField(
                               controller: _otpController,
@@ -96,9 +96,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                             ),
                             SizedBox(height: 20.h),
                             Text.rich(
-                              const TextSpan(
-                                text: 'Resend code in ',
-                                children: [
+                               TextSpan(
+                                text: '${'auth.resend_in'.tr()} ',
+                                children: const[
                                   TextSpan(
                                     text: '00:28',
                                     style: TextStyle(color: Color(0xFF8F4E00), fontWeight: FontWeight.w900),
@@ -109,8 +109,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                               style: context.textTheme.titleSmall,
                             ),
                             TextButton(
-                              onPressed: () => context.showSuccessSnackBar('Demo OTP is 123456.'),
-                              child: const Text('Resend OTP'),
+                              onPressed: () => context.showSuccessSnackBar('auth.demo_otp'.tr()),
+                              child: Text('auth.resend_otp'.tr()),
                             ),
                             SizedBox(height: 14.h),
                             FilledButton.icon(
@@ -145,8 +145,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                         child: const Icon(Icons.security_outlined, color: Color(0xFF056E00)),
                       ),
                     ),
-                    title: const Text('End-to-End Encrypted'),
-                    subtitle: const Text('Your session is protected by state-grade encryption protocols.'),
+                    title: Text('auth.encrypted_title'.tr()),
+                    subtitle: Text('auth.encrypted_body'.tr()),
                   ),
                 ),
                 SizedBox(height: 60.h),
@@ -167,14 +167,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     try {
       final ok = await ref.read(appAuthProvider.notifier).verifyOtp(_otpController.text.trim());
       if (!ok && mounted) {
-        context.showErrorSnackBar('Invalid OTP. Use 123456 for this demo.');
+        context.showErrorSnackBar('auth.invalid_otp'.tr());
         return;
       }
       if (!mounted) return;
-      context.showSuccessSnackBar('Admin login successful.');
+      context.showSuccessSnackBar('auth.login_success'.tr());
       context.go(AppRoutes.adminDashboard);
     } catch (error) {
-      if (mounted) context.showErrorSnackBar('Login failed: $error');
+      if (mounted) context.showErrorSnackBar('${'auth.login_failed'.tr()}: $error');
     }
   }
 }

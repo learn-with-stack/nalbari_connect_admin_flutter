@@ -1,25 +1,17 @@
 ﻿import 'package:nalbari_connect_admin/src/features/portal/data/models/portal_models.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/admin_dashboard_ui_provider.dart';
 import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/portal_provider.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/widgets/admin_dashboard_chrome.dart';
 import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
-enum _AdminTab { appointments, complaints }
-
-class AdminDashboardScreen extends ConsumerStatefulWidget {
+class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
 
   @override
-  ConsumerState<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
-}
-
-class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
-  _AdminTab _tab = _AdminTab.appointments;
-  AppointmentStatus? _appointmentFilter;
-  ComplaintStatus? _complaintFilter;
-  String _search = '';
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(portalControllerProvider);
+    final ui = ref.watch(adminDashboardUiProvider);
+    final uiController = ref.read(adminDashboardUiProvider.notifier);
 
     return Scaffold(
       backgroundColor: context.colors.surface,
@@ -28,7 +20,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         child: NotificationListener<ScrollNotification>(
           onNotification: (notification) {
             if (notification.metrics.extentAfter < 360) {
-              if (_tab == _AdminTab.appointments) {
+              if (ui.tab == AdminDashboardTab.appointments) {
                 ref.read(portalControllerProvider.notifier).loadMoreAppointments();
               } else {
                 ref.read(portalControllerProvider.notifier).loadMoreComplaints();
@@ -37,20 +29,21 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             return false;
           },
           child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             slivers: [
-              _AdminHeader(
+              AdminSearchHeader(
                 unreadCount: state.unreadNotifications,
-                search: _search,
-                onSearchChanged: (value) => setState(() => _search = value),
+                search: ui.search,
+                onSearchChanged: uiController.setSearch,
               ),
               SliverPersistentHeader(
                 pinned: true,
-                delegate: _TabsHeaderDelegate(
-                  child: _TabStrip(
-                    selected: _tab,
+                delegate: AdminTabsHeaderDelegate(
+                  child: AdminTabStrip(
+                    selected: ui.tab,
                     appointmentCount: state.appointmentTotal == 0 ? state.appointments.length : state.appointmentTotal,
                     complaintCount: state.complaintTotal == 0 ? state.complaints.length : state.complaintTotal,
-                    onChanged: (tab) => setState(() => _tab = tab),
+                    onChanged: uiController.setTab,
                   ),
                 ),
               ),
@@ -71,256 +64,34 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     ),
                   ),
                 )
-              else if (_tab == _AdminTab.appointments)
+              else if (ui.tab == AdminDashboardTab.appointments)
                 SliverToBoxAdapter(
                   child: _AppointmentsPanel(
                     appointments: state.appointments,
-                    search: _search,
+                    search: ui.search,
                     total: state.appointmentTotal,
                     hasMore: state.hasMoreAppointments,
                     isLoadingMore: state.isLoadingMoreAppointments,
-                    selectedFilter: _appointmentFilter,
-                    onFilterChanged: (filter) => setState(() => _appointmentFilter = filter),
+                    selectedFilter: ui.appointmentFilter,
+                    onFilterChanged: uiController.setAppointmentFilter,
                   ),
                 )
               else
                 SliverToBoxAdapter(
                   child: _ComplaintsPanel(
                     complaints: state.complaints,
-                    search: _search,
+                    search: ui.search,
                     total: state.complaintTotal,
                     hasMore: state.hasMoreComplaints,
                     isLoadingMore: state.isLoadingMoreComplaints,
-                    selectedFilter: _complaintFilter,
-                    onFilterChanged: (filter) => setState(() => _complaintFilter = filter),
+                    selectedFilter: ui.complaintFilter,
+                    onFilterChanged: uiController.setComplaintFilter,
                   ),
                 ),
               SliverToBoxAdapter(child: SizedBox(height: 20.h)),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _AdminHeader extends StatelessWidget {
-  const _AdminHeader({required this.unreadCount, required this.search, required this.onSearchChanged});
-
-  final int unreadCount;
-  final String search;
-  final ValueChanged<String> onSearchChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      pinned: true,
-      stretch: true,
-      expandedHeight: 154.h,
-      backgroundColor: context.colors.onSurface,
-      surfaceTintColor: Colors.transparent,
-      automaticallyImplyLeading: false,
-      title: Row(
-        children: [
-          AppLogoMark(size: 34.w, radius: 8.r),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Text(
-              'admin.dashboard'.tr(),
-              textAlign: TextAlign.center,
-              style: context.textTheme.titleMedium?.copyWith(color: context.colors.surfaceContainerLowest, fontWeight: FontWeight.w900),
-            ),
-          ),
-          _NotificationButton(unreadCount: unreadCount),
-          SizedBox(width: 2.w),
-          const _ProfileButton(),
-        ],
-      ),
-      flexibleSpace: FlexibleSpaceBar(
-        background: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [Color(0xFF334155), Color(0xFF475569)]),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(12.w, 76.h, 12.w, 12.h),
-              child: TextField(
-                onChanged: onSearchChanged,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: 'admin.search'.tr(),
-                  hintStyle: const TextStyle(color: Color(0xFFD8DEE9)),
-                  prefixIcon: const Icon(Icons.search, color: Color(0xFFD8DEE9)),
-                  filled: true,
-                  fillColor: context.colors.surfaceContainerLowest.withValues(alpha: 0.12),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(color: context.colors.surfaceContainerLowest.withValues(alpha: 0.22)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: const BorderSide(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-class _TabsHeaderDelegate extends SliverPersistentHeaderDelegate {
-  const _TabsHeaderDelegate({required this.child});
-
-  final Widget child;
-
-  @override
-  double get minExtent => 58;
-
-  @override
-  double get maxExtent => 58;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => child;
-
-  @override
-  bool shouldRebuild(covariant _TabsHeaderDelegate oldDelegate) => oldDelegate.child != child;
-}
-
-class _NotificationButton extends StatelessWidget {
-  const _NotificationButton({required this.unreadCount});
-
-  final int unreadCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        IconButton(
-          onPressed: () => context.push(AppRoutes.notifications),
-          icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-        ),
-        if (unreadCount > 0)
-          Positioned(
-            right: 7,
-            top: 5,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: Color(0xFFE11D48), shape: BoxShape.circle),
-              child: Padding(
-                padding: EdgeInsets.all(4.w),
-                child: Text(
-                  unreadCount > 9 ? '9+' : '$unreadCount',
-                  style: context.textTheme.labelSmall?.copyWith(color: context.colors.surfaceContainerLowest, fontSize: 9.sp, fontWeight: FontWeight.w900),
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-
-class _ProfileButton extends StatelessWidget {
-  const _ProfileButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'profile.title'.tr(),
-      onPressed: () => context.push(AppRoutes.profile),
-      icon: const Icon(Icons.person_outline, color: Colors.white),
-    );
-  }
-}
-class _TabStrip extends StatelessWidget {
-  const _TabStrip({required this.selected, required this.appointmentCount, required this.complaintCount, required this.onChanged});
-
-  final _AdminTab selected;
-  final int appointmentCount;
-  final int complaintCount;
-  final ValueChanged<_AdminTab> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(color: context.colors.surface, border: Border(bottom: BorderSide(color: context.colors.outlineVariant))),
-      child: Row(
-        children: [
-          _TabButton(
-            icon: Icons.calendar_month_outlined,
-            label: 'admin.appointments'.tr(),
-            count: appointmentCount,
-            selected: selected == _AdminTab.appointments,
-            onTap: () => onChanged(_AdminTab.appointments),
-          ),
-          _TabButton(
-            icon: Icons.chat_bubble_outline,
-            label: 'admin.complaints'.tr(),
-            count: complaintCount,
-            selected: selected == _AdminTab.complaints,
-            onTap: () => onChanged(_AdminTab.complaints),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TabButton extends StatelessWidget {
-  const _TabButton({required this.icon, required this.label, required this.count, required this.selected, required this.onTap});
-
-  final IconData icon;
-  final String label;
-  final int count;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected ? context.colors.primary : context.colors.onSurfaceVariant;
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(8.w, 14.h, 8.w, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon, size: 18.sp, color: color),
-                  SizedBox(width: 7.w),
-                  Text(label, style: context.textTheme.labelLarge?.copyWith(color: color, fontWeight: FontWeight.w800)),
-                  SizedBox(width: 6.w),
-                  _CountPill(count: count, selected: selected),
-                ],
-              ),
-              SizedBox(height: 11.h),
-              SizedBox(height: 2.h, child: DecoratedBox(decoration: BoxDecoration(color: selected ? color : Colors.transparent))),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CountPill extends StatelessWidget {
-  const _CountPill({required this.count, required this.selected});
-
-  final int count;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(color: selected ? const Color(0xFFDBEAFE) : const Color(0xFFFEE2E2), borderRadius: AppBorders.full),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
-        child: Text('$count', style: context.textTheme.labelSmall?.copyWith(color: selected ? const Color(0xFF2563EB) : const Color(0xFFEF4444), fontWeight: FontWeight.w900)),
       ),
     );
   }
@@ -369,9 +140,9 @@ class _AppointmentsPanel extends ConsumerWidget {
             scrollDirection: Axis.horizontal,
             child: Row(children: [
               _FilterPill(label: 'admin.all'.tr(), selected: selectedFilter == null, onTap: () => onFilterChanged(null)),
-              _FilterPill(label: 'Pending ($pending)', selected: selectedFilter == AppointmentStatus.pending, onTap: () => onFilterChanged(AppointmentStatus.pending)),
-              _FilterPill(label: 'Approved ($approved)', selected: selectedFilter == AppointmentStatus.approved, onTap: () => onFilterChanged(AppointmentStatus.approved)),
-              _FilterPill(label: 'Rejected ($rejected)', selected: selectedFilter == AppointmentStatus.rejected, onTap: () => onFilterChanged(AppointmentStatus.rejected)),
+              _FilterPill(label: '${'admin.pending'.tr()} ($pending)', selected: selectedFilter == AppointmentStatus.pending, onTap: () => onFilterChanged(AppointmentStatus.pending)),
+              _FilterPill(label: '${'admin.approved'.tr()} ($approved)', selected: selectedFilter == AppointmentStatus.approved, onTap: () => onFilterChanged(AppointmentStatus.approved)),
+              _FilterPill(label: '${'admin.rejected'.tr()} ($rejected)', selected: selectedFilter == AppointmentStatus.rejected, onTap: () => onFilterChanged(AppointmentStatus.rejected)),
             ]),
           ),
           SizedBox(height: 14.h),
@@ -430,9 +201,9 @@ class _ComplaintsPanel extends ConsumerWidget {
             scrollDirection: Axis.horizontal,
             child: Row(children: [
               _FilterPill(label: 'admin.all'.tr(), selected: selectedFilter == null, onTap: () => onFilterChanged(null)),
-              _FilterPill(label: 'New ($newCount)', selected: selectedFilter == ComplaintStatus.newRequest, onTap: () => onFilterChanged(ComplaintStatus.newRequest)),
-              _FilterPill(label: 'In Review ($reviewCount)', selected: selectedFilter == ComplaintStatus.inReview, onTap: () => onFilterChanged(ComplaintStatus.inReview)),
-              _FilterPill(label: 'Resolved ($resolvedCount)', selected: selectedFilter == ComplaintStatus.resolved, onTap: () => onFilterChanged(ComplaintStatus.resolved)),
+              _FilterPill(label: '${'admin.new'.tr()} ($newCount)', selected: selectedFilter == ComplaintStatus.newRequest, onTap: () => onFilterChanged(ComplaintStatus.newRequest)),
+              _FilterPill(label: '${'admin.in_review'.tr()} ($reviewCount)', selected: selectedFilter == ComplaintStatus.inReview, onTap: () => onFilterChanged(ComplaintStatus.inReview)),
+              _FilterPill(label: '${'admin.resolved'.tr()} ($resolvedCount)', selected: selectedFilter == ComplaintStatus.resolved, onTap: () => onFilterChanged(ComplaintStatus.resolved)),
             ]),
           ),
           SizedBox(height: 14.h),
@@ -554,7 +325,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       Expanded(child: Text(title, style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900))),
-      Text('$count items', style: context.textTheme.labelMedium?.copyWith(color: context.colors.onSurfaceVariant)),
+      Text('admin.items_count'.tr(args: ['$count']), style: context.textTheme.labelMedium?.copyWith(color: context.colors.onSurfaceVariant)),
     ]);
   }
 }
@@ -762,56 +533,59 @@ class _ComplaintCard extends ConsumerWidget {
 
   void _showComplaintActions(BuildContext context, WidgetRef ref) {
     final actionController = TextEditingController(text: complaint.adminAction ?? '');
-    var selectedStatus = complaint.status;
+    final selectedStatus = ValueNotifier<ComplaintStatus>(complaint.status);
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setSheetState) => Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 24.h + MediaQuery.of(context).viewInsets.bottom),
-          child: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              Row(children: [Expanded(child: Text('admin.complaint_details'.tr(), style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))), _ComplaintBadge(status: complaint.status)]),
-              SizedBox(height: 12.h),
-              _DetailRow(label: 'admin.name'.tr(), value: complaint.reporterName),
-              _DetailRow(label: 'admin.phone'.tr(), value: complaint.phoneNumber ?? '-'),
-              _DetailRow(label: 'admin.area'.tr(), value: '${complaint.areaType.name} ${complaint.areaNumber}'),
-              _DetailRow(label: 'admin.priority'.tr(), value: _priorityLabel(complaint.priority)),
-              _DetailRow(label: 'admin.issue'.tr(), value: _complaintTitle(complaint)),
-              _DetailRow(label: 'admin.description'.tr(), value: complaint.description),
-              _DetailRow(label: 'admin.media'.tr(), value: complaint.mediaName ?? '-'),
-              if (complaint.latitude != null && complaint.longitude != null) _DetailRow(label: 'admin.location'.tr(), value: '${complaint.latitude!.toStringAsFixed(4)}, ${complaint.longitude!.toStringAsFixed(4)}'),
-              SizedBox(height: 10.h),
-              DropdownButtonFormField<ComplaintStatus>(
-                initialValue: selectedStatus,
+      builder: (context) => Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 24.h + MediaQuery.of(context).viewInsets.bottom),
+        child: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Row(children: [Expanded(child: Text('admin.complaint_details'.tr(), style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))), _ComplaintBadge(status: complaint.status)]),
+            SizedBox(height: 12.h),
+            _DetailRow(label: 'admin.name'.tr(), value: complaint.reporterName),
+            _DetailRow(label: 'admin.phone'.tr(), value: complaint.phoneNumber ?? '-'),
+            _DetailRow(label: 'admin.area'.tr(), value: '${_areaTypeLabel(complaint.areaType)} ${complaint.areaNumber}'),
+            _DetailRow(label: 'admin.priority'.tr(), value: _priorityLabel(complaint.priority)),
+            _DetailRow(label: 'admin.issue'.tr(), value: _complaintTitle(complaint)),
+            _DetailRow(label: 'admin.description'.tr(), value: complaint.description),
+            _DetailRow(label: 'admin.media'.tr(), value: complaint.mediaName ?? '-'),
+            if (complaint.latitude != null && complaint.longitude != null) _DetailRow(label: 'admin.location'.tr(), value: '${complaint.latitude!.toStringAsFixed(4)}, ${complaint.longitude!.toStringAsFixed(4)}'),
+            SizedBox(height: 10.h),
+            ValueListenableBuilder<ComplaintStatus>(
+              valueListenable: selectedStatus,
+              builder: (context, value, _) => DropdownButtonFormField<ComplaintStatus>(
+                initialValue: value,
                 decoration: InputDecoration(labelText: 'admin.status'.tr()),
                 items: ComplaintStatus.values.map((status) => DropdownMenuItem(value: status, child: Text(_complaintStatusLabel(status)))).toList(),
-                onChanged: (status) => setSheetState(() => selectedStatus = status ?? selectedStatus),
-              ),
-              SizedBox(height: 10.h),
-              TextField(controller: actionController, minLines: 3, maxLines: 5, decoration: InputDecoration(labelText: 'admin.action_taken'.tr())),
-              SizedBox(height: 14.h),
-              FilledButton(
-                onPressed: () async {
-                  try {
-                    await ref.read(portalControllerProvider.notifier).updateComplaintStatus(
-                          complaint.id,
-                          selectedStatus,
-                          adminAction: actionController.text.trim().isEmpty ? 'Reviewed by admin.' : actionController.text.trim(),
-                        );
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                      context.showSuccessSnackBar('admin.complaint_updated'.tr());
-                    }
-                  } catch (error) {
-                    if (context.mounted) context.showErrorSnackBar(error.toString());
-                  }
+                onChanged: (status) {
+                  if (status != null) selectedStatus.value = status;
                 },
-                child: Text('admin.save_changes'.tr()),
               ),
-            ]),
-          ),
+            ),
+            SizedBox(height: 10.h),
+            TextField(controller: actionController, minLines: 3, maxLines: 5, decoration: InputDecoration(labelText: 'admin.action_taken'.tr())),
+            SizedBox(height: 14.h),
+            FilledButton(
+              onPressed: () async {
+                try {
+                  await ref.read(portalControllerProvider.notifier).updateComplaintStatus(
+                        complaint.id,
+                        selectedStatus.value,
+                        adminAction: actionController.text.trim().isEmpty ? 'admin.reviewed_by_admin'.tr() : actionController.text.trim(),
+                      );
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    context.showSuccessSnackBar('admin.complaint_updated'.tr());
+                  }
+                } catch (error) {
+                  if (context.mounted) context.showErrorSnackBar(error.toString());
+                }
+              },
+              child: Text('admin.save_changes'.tr()),
+            ),
+          ]),
         ),
       ),
     );
@@ -887,9 +661,9 @@ class _PriorityBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, bg, fg) = switch (priority) {
-      ComplaintPriority.high => ('High Priority', const Color(0xFFFFF1F2), const Color(0xFFE11D48)),
-      ComplaintPriority.medium => ('Medium Priority', const Color(0xFFFFFBEB), const Color(0xFFD97706)),
-      ComplaintPriority.low => ('Low Priority', const Color(0xFFF0FDF4), const Color(0xFF16A34A)),
+      ComplaintPriority.high => ('admin.high_priority'.tr(), const Color(0xFFFFF1F2), const Color(0xFFE11D48)),
+      ComplaintPriority.medium => ('admin.medium_priority'.tr(), const Color(0xFFFFFBEB), const Color(0xFFD97706)),
+      ComplaintPriority.low => ('admin.low_priority'.tr(), const Color(0xFFF0FDF4), const Color(0xFF16A34A)),
     };
     return _SmallBadge(label: label, bg: bg, fg: fg);
   }
@@ -916,17 +690,17 @@ class _SmallBadge extends StatelessWidget {
 
 String _appointmentStatusLabel(AppointmentStatus status) {
   return switch (status) {
-    AppointmentStatus.pending => 'Pending',
-    AppointmentStatus.approved => 'Approved',
-    AppointmentStatus.rejected => 'Rejected',
+    AppointmentStatus.pending => 'admin.pending'.tr(),
+    AppointmentStatus.approved => 'admin.approved'.tr(),
+    AppointmentStatus.rejected => 'admin.rejected'.tr(),
   };
 }
 
 String _complaintStatusLabel(ComplaintStatus status) {
   return switch (status) {
-    ComplaintStatus.newRequest => 'New',
-    ComplaintStatus.inReview => 'In Review',
-    ComplaintStatus.resolved => 'Resolved',
+    ComplaintStatus.newRequest => 'admin.new'.tr(),
+    ComplaintStatus.inReview => 'admin.in_review'.tr(),
+    ComplaintStatus.resolved => 'admin.resolved'.tr(),
   };
 }
 
@@ -940,11 +714,13 @@ String _priorityLabel(ComplaintPriority priority) {
 }
 
 String _complaintTitle(ComplaintRequest complaint) {
-  if (complaint.description.toLowerCase().contains('billing')) return 'Billing discrepancy';
-  if (complaint.description.toLowerCase().contains('wait')) return 'Long wait time in emergency room';
-  if (complaint.description.toLowerCase().contains('street')) return 'Street light issue resolved';
-  return '${complaint.areaType.name} ${complaint.areaNumber} complaint';
+  if (complaint.description.toLowerCase().contains('billing')) return 'admin.mock_billing_issue'.tr();
+  if (complaint.description.toLowerCase().contains('wait')) return 'admin.mock_wait_issue'.tr();
+  if (complaint.description.toLowerCase().contains('street')) return 'admin.mock_street_issue'.tr();
+  return '${_areaTypeLabel(complaint.areaType)} ${complaint.areaNumber} ${'admin.complaint'.tr()}';
 }
+
+String _areaTypeLabel(AreaType type) => type == AreaType.ward ? 'complaint.ward'.tr() : 'complaint.panchayat'.tr();
 
 String _dateLabel(DateTime date) {
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -953,9 +729,9 @@ String _dateLabel(DateTime date) {
 
 String _timeAgo(DateTime date) {
   final diff = DateTime.now().difference(date);
-  if (diff.inHours < 1) return '${diff.inMinutes} min ago';
-  if (diff.inDays < 1) return '${diff.inHours} hours ago';
-  return '${diff.inDays} days ago';
+  if (diff.inHours < 1) return '${diff.inMinutes} ${'admin.minutes_ago'.tr()}';
+  if (diff.inDays < 1) return '${diff.inHours} ${'admin.hours_ago'.tr()}';
+  return '${diff.inDays} ${'admin.days_ago'.tr()}';
 }
 
 
