@@ -47,10 +47,13 @@ class ProfileScreen extends ConsumerWidget {
           ),
           SizedBox(height: 18.h),
           _ProfileLink(icon: Icons.settings_outlined, label: 'profile.settings'.tr(), route: AppRoutes.settings),
+          SizedBox(height: 10.h),
           _ProfileLink(icon: Icons.info_outline, label: 'profile.about'.tr(), route: AppRoutes.about),
+          SizedBox(height: 10.h),
           _ProfileLink(icon: Icons.help_outline, label: 'profile.faq'.tr(), route: AppRoutes.faq),
+          SizedBox(height: 10.h),
           _ProfileLink(icon: Icons.privacy_tip_outlined, label: 'profile.privacy'.tr(), route: AppRoutes.privacy),
-          SizedBox(height: 12.h),
+          SizedBox(height: 18.h),
           OutlinedButton.icon(
             onPressed: () => _confirmLogout(context, ref),
             icon: const Icon(Icons.logout_outlined),
@@ -89,12 +92,20 @@ class _ProfileLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.colors;
+
     return Card(
-      color: context.colors.surfaceContainerLowest,
+      color: cs.surfaceContainerLow,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppBorders.card,
+        side: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.6)),
+      ),
       child: ListTile(
-        leading: Icon(icon),
-        title: Text(label),
-        trailing: const Icon(Icons.chevron_right),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+        leading: Icon(icon, color: cs.primary),
+        title: Text(label, style: context.textTheme.titleSmall?.copyWith(color: cs.onSurface, fontWeight: FontWeight.w800)),
+        trailing: Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
         onTap: () => context.push(route),
       ),
     );

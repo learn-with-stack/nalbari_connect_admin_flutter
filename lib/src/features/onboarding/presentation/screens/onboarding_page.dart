@@ -27,13 +27,13 @@ class OnboardingPage extends ConsumerWidget {
               style: context.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
             ),
             SizedBox(height: 30.h),
-            Text('onboarding.language'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
-            SizedBox(height: 12.h),
+            const _SectionLabel(),
+            SizedBox(height: 14.h),
             const _LanguageCard(title: 'English', subtitle: 'English', locale: Locale('en')),
             SizedBox(height: 10.h),
-            const _LanguageCard(title: '???????', subtitle: 'Assamese', locale: Locale('as')),
+            const _LanguageCard(title: 'অসমীয়া', subtitle: 'Assamese', locale: Locale('as')),
             SizedBox(height: 10.h),
-            const _LanguageCard(title: '??????', subtitle: 'Hindi', locale: Locale('hi')),
+            const _LanguageCard(title: 'हिन्दी', subtitle: 'Hindi', locale: Locale('hi')),
             SizedBox(height: 28.h),
             FilledButton.icon(
               style: FilledButton.styleFrom(minimumSize: Size.fromHeight(56.h)),
@@ -53,6 +53,31 @@ class OnboardingPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: context.colors.outlineVariant)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          child: Text(
+            'onboarding.language_label'.tr(),
+            style: context.textTheme.labelSmall?.copyWith(
+              color: context.colors.onSurfaceVariant,
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        Expanded(child: Divider(color: context.colors.outlineVariant)),
+      ],
     );
   }
 }

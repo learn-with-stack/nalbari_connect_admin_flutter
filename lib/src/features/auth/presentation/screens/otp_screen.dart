@@ -26,16 +26,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Stack(
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(16.w, 22.h, 16.w, 24.h),
           children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _PatternPainter(color: cs.outlineVariant.withValues(alpha: 0.35)),
-              ),
-            ),
-            ListView(
-              padding: EdgeInsets.fromLTRB(16.w, 22.h, 16.w, 24.h),
-              children: [
                 TextButton.icon(
                   onPressed: () => context.go(AppRoutes.login),
                   icon: const Icon(Icons.arrow_back),
@@ -151,12 +144,10 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 ),
                 SizedBox(height: 60.h),
                 Text(
-                  'Privacy Policy   |   Support\nCopyright 2024 Nalbari Admin | Secure Gateway',
+                  'auth.footer'.tr(),
                   textAlign: TextAlign.center,
                   style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
                 ),
-              ],
-            ),
           ],
         ),
       ),
@@ -178,26 +169,4 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     }
   }
 }
-
-class _PatternPainter extends CustomPainter {
-  const _PatternPainter({required this.color});
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.2;
-    for (double x = -size.height; x < size.width; x += 12) {
-      canvas.drawLine(Offset(x, 0), Offset(x + size.height, size.height), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _PatternPainter oldDelegate) => oldDelegate.color != color;
-}
-
-
-
 

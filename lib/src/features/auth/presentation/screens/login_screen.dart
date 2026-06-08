@@ -92,8 +92,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             SizedBox(height: 18.h),
             Text('auth.demo_hint'.tr(), textAlign: TextAlign.center, style: context.textTheme.labelMedium?.copyWith(color: cs.primary, fontWeight: FontWeight.w800)),
-            SizedBox(height: 28.h),
-            Text('auth.secured'.tr(), textAlign: TextAlign.center, style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                Expanded(child: _InfoTile(icon: Icons.security_outlined, title: 'auth.secure_gateway_title'.tr(), body: 'auth.secure_gateway_body'.tr())),
+                SizedBox(width: 10.w),
+                Expanded(child: _InfoTile(icon: Icons.verified_outlined, title: 'auth.govt_verified_title'.tr(), body: 'auth.govt_verified_body'.tr())),
+              ],
+            ),
+            SizedBox(height: 30.h),
+            Text('auth.footer'.tr(), textAlign: TextAlign.center, style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant)),
           ],
         ),
       ),
@@ -111,5 +119,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (error) {
       if (mounted) context.showErrorSnackBar('${'auth.otp_failed'.tr()}: $error');
     }
+  }
+}
+
+class _InfoTile extends StatelessWidget {
+  const _InfoTile({required this.icon, required this.title, required this.body});
+
+  final IconData icon;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: context.colors.surfaceContainerHigh.withValues(alpha: 0.55),
+        borderRadius: AppBorders.card,
+        border: Border.all(color: context.colors.outlineVariant.withValues(alpha: 0.5)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(12.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: const Color(0xFF056E00)),
+            SizedBox(height: 8.h),
+            Text(title, style: context.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w900)),
+            SizedBox(height: 4.h),
+            Text(body, style: context.textTheme.labelSmall?.copyWith(color: context.colors.onSurfaceVariant)),
+          ],
+        ),
+      ),
+    );
   }
 }

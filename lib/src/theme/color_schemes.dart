@@ -123,4 +123,4 @@ class AppPalettes {
 }
 
 /// Access semantic colors via `context.appColors` from `context_extension.dart`.
-/// Example: `context.appColors.success`
+/// Example: `context.appColors.success`

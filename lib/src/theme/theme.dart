@@ -251,7 +251,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
       side: BorderSide(color: colorScheme.outlineVariant),
       backgroundColor: colorScheme.surfaceContainerLow,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      labelStyle: textTheme.labelMedium,
+      labelStyle: textTheme.labelMedium?.copyWith(color: colorScheme.onSurfaceVariant) ,
     ),
 
     // List Tile Theme
@@ -294,8 +294,8 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       elevation: 0,
       backgroundColor: colorScheme.surface,
-      titleTextStyle: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-      contentTextStyle: textTheme.bodyMedium,
+      titleTextStyle: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+      contentTextStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
     ),
 
     // Bottom Sheet Theme
