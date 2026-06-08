@@ -1,0 +1,90 @@
+{
+  "app": {
+    "name": "Nalbari Connect",
+    "tagline": "Citizen services and executive action in one secure app"
+  },
+  "auth": {
+    "welcome": "Welcome",
+    "phone_title": "Sign in with your phone number",
+    "phone_number": "Phone Number",
+    "phone_hint": "9876543210",
+    "continue": "Continue",
+    "otp_title": "Verify OTP",
+    "otp_subtitle": "Enter the 6-digit code sent to your phone",
+    "otp": "OTP",
+    "verify": "Verify and continue",
+    "secured": "Your information is secured and encrypted",
+    "demo_hint": "Demo: use 123456. Admin phone: 9999999999"
+  },
+  "onboarding": {
+    "title": "Connect with your constituency",
+    "subtitle": "Read updates, book appointments, raise complaints, and track official action.",
+    "language": "Choose language",
+    "location_title": "Location permission",
+    "location_subtitle": "Location helps tag complaints to the right ward or panchayat.",
+    "start": "Get started"
+  },
+  "home": {
+    "latest_news": "Latest News",
+    "book_appointment": "Book Appointment",
+    "raise_complaint": "Raise Complaint",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "appointment": {
+    "title": "Book Appointment",
+    "select_date": "Select Date",
+    "select_time": "Select Time",
+    "full_name": "Full Name",
+    "full_name_hint": "Enter your full name",
+    "id_proof": "ID Proof",
+    "upload_id": "Upload ID Proof",
+    "id_saved": "Saved ID proof will be used",
+    "book": "Book Appointment",
+    "success": "Appointment request submitted"
+  },
+  "complaint": {
+    "title": "Raise Complaint",
+    "area_type": "Area Type",
+    "ward": "Ward",
+    "panchayat": "Panchayat",
+    "ward_number": "Ward Number",
+    "panchayat_number": "Panchayat Number",
+    "describe": "Describe your complaint",
+    "describe_hint": "Please provide details about your complaint...",
+    "media": "Add Photos or Videos (Optional)",
+    "upload_media": "Upload Photos or Videos",
+    "submit": "Submit Complaint",
+    "success": "Complaint submitted"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "search": "Search requests...",
+    "appointments": "Appointments",
+    "complaints": "Complaints",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "total": "Total",
+    "all": "All",
+    "approve": "Approve",
+    "reject": "Reject",
+    "all_appointments": "All Appointments"
+  },
+  "profile": {
+    "title": "Profile",
+    "appointments": "Appointments",
+    "complaints": "Complaints",
+    "settings": "Settings",
+    "about": "About App",
+    "faq": "FAQ",
+    "privacy": "Privacy & Security"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "dark_mode": "Follow system theme",
+    "version": "Version"
+  }
+}
