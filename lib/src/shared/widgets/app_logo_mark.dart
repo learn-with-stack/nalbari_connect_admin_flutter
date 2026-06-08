@@ -9,15 +9,18 @@ class AppLogoMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = context.colors;
+    // Use the provided radius or default to a perfect circle (size / 2)
+
     return SizedBox.square(
       dimension: size,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius ?? size * 0.22),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: cs.surface,
-            border: Border.all(color: cs.outlineVariant),
-          ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: cs.surface,
+          shape: BoxShape.circle, // Forces circular shape
+          border: Border.all(color: cs.outlineVariant),
+        ),
+        child: ClipOval(
+          // Ensures the image is clipped into a perfect circle
           child: Image.asset(
             AppAssets.logo,
             fit: BoxFit.cover,
@@ -25,7 +28,7 @@ class AppLogoMark extends StatelessWidget {
               return Icon(
                 Icons.account_balance_outlined,
                 color: cs.primary,
-                size: size * 0.42,
+                size: size * 0.5,
               );
             },
           ),

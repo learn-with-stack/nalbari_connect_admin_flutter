@@ -32,8 +32,6 @@ class OnboardingPage extends ConsumerWidget {
             const _LanguageCard(title: 'English', subtitle: 'English', locale: Locale('en')),
             SizedBox(height: 10.h),
             const _LanguageCard(title: 'অসমীয়া', subtitle: 'Assamese', locale: Locale('as')),
-            SizedBox(height: 10.h),
-            const _LanguageCard(title: 'हिन्दी', subtitle: 'Hindi', locale: Locale('hi')),
             SizedBox(height: 28.h),
             FilledButton.icon(
               style: FilledButton.styleFrom(minimumSize: Size.fromHeight(56.h)),

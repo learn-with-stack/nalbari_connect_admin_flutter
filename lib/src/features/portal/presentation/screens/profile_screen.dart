@@ -158,15 +158,6 @@ class SettingsScreen extends ConsumerWidget {
                   context.showSuccessSnackBar('settings.language_changed'.tr());
                 },
               ),
-              ChoiceChip(
-                label: const Text('हिन्दी'),
-                selected: context.locale.languageCode == 'hi',
-                onSelected: (_) async {
-                  await context.setLocale(const Locale('hi'));
-                  if (!context.mounted) return;
-                  context.showSuccessSnackBar('settings.language_changed'.tr());
-                },
-              ),
             ],
           ),
           SizedBox(height: 18.h),

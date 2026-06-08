@@ -2,7 +2,11 @@ import 'package:nalbari_connect_admin/src/features/portal/presentation/providers
 import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
 class AdminSearchHeader extends StatelessWidget {
-  const AdminSearchHeader({required this.unreadCount, required this.search, required this.onSearchChanged, super.key});
+  const AdminSearchHeader(
+      {required this.unreadCount,
+      required this.search,
+      required this.onSearchChanged,
+      super.key});
 
   final int unreadCount;
   final String search;
@@ -13,7 +17,7 @@ class AdminSearchHeader extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       stretch: true,
-      expandedHeight: 154.h,
+      expandedHeight: 120.h,
       backgroundColor: const Color(0xFF334155),
       surfaceTintColor: Colors.transparent,
       automaticallyImplyLeading: false,
@@ -25,9 +29,11 @@ class AdminSearchHeader extends StatelessWidget {
             child: Text(
               'admin.dashboard'.tr(),
               textAlign: TextAlign.center,
-              style: context.textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w900),
+              style: context.textTheme.titleMedium
+                  ?.copyWith(color: Colors.white, fontWeight: FontWeight.w900),
             ),
           ),
+          const LanguageAppBarButton(),
           _NotificationButton(unreadCount: unreadCount),
           SizedBox(width: 2.w),
           IconButton(
@@ -39,22 +45,31 @@ class AdminSearchHeader extends StatelessWidget {
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: DecoratedBox(
-          decoration: const BoxDecoration(gradient: LinearGradient(colors: [Color(0xFF334155), Color(0xFF475569)])),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF334155),
+                Color(0xFF475569),
+              ],
+            ),
+          ),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(12.w, 76.h, 12.w, 12.h),
+              padding: EdgeInsets.fromLTRB(12.w, 60.h, 12.w, 12.h),
               child: TextField(
                 onChanged: onSearchChanged,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'admin.search'.tr(),
                   hintStyle: const TextStyle(color: Color(0xFFD8DEE9)),
-                  prefixIcon: const Icon(Icons.search, color: Color(0xFFD8DEE9)),
+                  prefixIcon:
+                      const Icon(Icons.search, color: Color(0xFFD8DEE9)),
                   filled: true,
                   fillColor: Colors.white.withValues(alpha: 0.14),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.22)),
+                    borderSide:
+                        BorderSide(color: Colors.white.withValues(alpha: 0.22)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
@@ -82,14 +97,22 @@ class AdminTabsHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 58;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => child;
+  Widget build(
+          BuildContext context, double shrinkOffset, bool overlapsContent) =>
+      child;
 
   @override
-  bool shouldRebuild(covariant AdminTabsHeaderDelegate oldDelegate) => oldDelegate.child != child;
+  bool shouldRebuild(covariant AdminTabsHeaderDelegate oldDelegate) =>
+      oldDelegate.child != child;
 }
 
 class AdminTabStrip extends StatelessWidget {
-  const AdminTabStrip({required this.selected, required this.appointmentCount, required this.complaintCount, required this.onChanged, super.key});
+  const AdminTabStrip(
+      {required this.selected,
+      required this.appointmentCount,
+      required this.complaintCount,
+      required this.onChanged,
+      super.key});
 
   final AdminDashboardTab selected;
   final int appointmentCount;
@@ -99,7 +122,10 @@ class AdminTabStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(color: context.colors.surface, border: Border(bottom: BorderSide(color: context.colors.outlineVariant))),
+      decoration: BoxDecoration(
+          color: context.colors.surface,
+          border:
+              Border(bottom: BorderSide(color: context.colors.outlineVariant))),
       child: Row(
         children: [
           _TabButton(
@@ -142,10 +168,15 @@ class _NotificationButton extends StatelessWidget {
             right: 7,
             top: 5,
             child: DecoratedBox(
-              decoration: const BoxDecoration(color: Color(0xFFE11D48), shape: BoxShape.circle),
+              decoration: const BoxDecoration(
+                  color: Color(0xFFE11D48), shape: BoxShape.circle),
               child: Padding(
                 padding: EdgeInsets.all(4.w),
-                child: Text(unreadCount > 9 ? '9+' : '$unreadCount', style: context.textTheme.labelSmall?.copyWith(color: Colors.white, fontSize: 9.sp, fontWeight: FontWeight.w900)),
+                child: Text(unreadCount > 9 ? '9+' : '$unreadCount',
+                    style: context.textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.w900)),
               ),
             ),
           ),
@@ -155,7 +186,12 @@ class _NotificationButton extends StatelessWidget {
 }
 
 class _TabButton extends StatelessWidget {
-  const _TabButton({required this.icon, required this.label, required this.count, required this.selected, required this.onTap});
+  const _TabButton(
+      {required this.icon,
+      required this.label,
+      required this.count,
+      required this.selected,
+      required this.onTap});
 
   final IconData icon;
   final String label;
@@ -165,7 +201,8 @@ class _TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? context.colors.primary : context.colors.onSurfaceVariant;
+    final color =
+        selected ? context.colors.primary : context.colors.onSurfaceVariant;
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -178,20 +215,96 @@ class _TabButton extends StatelessWidget {
                 children: [
                   Icon(icon, size: 18.sp, color: color),
                   SizedBox(width: 7.w),
-                  Text(label, style: context.textTheme.labelLarge?.copyWith(color: color, fontWeight: FontWeight.w800)),
+                  Text(
+                    label,
+                    style: context.textTheme.labelLarge?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                   SizedBox(width: 6.w),
                   DecoratedBox(
-                    decoration: BoxDecoration(color: selected ? context.colors.primaryContainer : context.colors.surfaceContainerHighest, borderRadius: AppBorders.full),
+                    decoration: BoxDecoration(
+                        color: selected
+                            ? context.colors.primaryContainer
+                            : context.colors.surfaceContainerHighest,
+                        borderRadius: AppBorders.full),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
-                      child: Text('$count', style: context.textTheme.labelSmall?.copyWith(color: selected ? context.colors.onPrimaryContainer : context.colors.onSurfaceVariant, fontWeight: FontWeight.w900)),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+                      child: Text(
+                        '$count',
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: selected
+                              ? context.colors.onPrimaryContainer
+                              : context.colors.onSurfaceVariant,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 11.h),
-              SizedBox(height: 2.h, child: DecoratedBox(decoration: BoxDecoration(color: selected ? color : Colors.transparent))),
+              SizedBox(
+                height: 2.h,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: selected ? color : Colors.transparent,
+                  ),
+                ),
+              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LanguageAppBarButton extends StatelessWidget {
+  const LanguageAppBarButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Logic: If current is 'as', next is 'en', otherwise 'as'
+    final isAssamese = context.locale.languageCode == 'as';
+    final nextLocale = isAssamese ? const Locale('en') : const Locale('as');
+    final nextLabel = isAssamese ? 'EN' : 'অ'; // Compact labels
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      child: Material(
+        color: Colors.white.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20.r),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20.r),
+          onTap: () async {
+            await context.setLocale(nextLocale);
+            if (context.mounted) {
+              context.showSuccessSnackBar('settings.language_changed'.tr());
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.translate, size: 14.sp, color: Colors.white.withValues(alpha: 0.9)),
+                SizedBox(width: 6.w),
+                Text(
+                  nextLabel, // Shows the language you can switch TO
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

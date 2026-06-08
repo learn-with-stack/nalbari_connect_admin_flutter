@@ -39,7 +39,7 @@
     "title": "Admin office control room",
     "subtitle": "Review appointments, manage complaints, and track office notifications.",
     "language": "Choose language",
-    "language_label": "Language / ভাষা / भाषा",
+    "language_label": "Language / ভাষা",
     "location_title": "Location permission",
     "location_subtitle": "Location helps validate complaint coordinates when the backend is connected.",
     "start": "Get started"
@@ -62,6 +62,7 @@
   },
   "admin": {
     "dashboard": "Admin Dashboard",
+    "select_language": "Select Language",
     "search": "Search requests...",
     "appointments": "Appointments",
     "complaints": "Complaints",
