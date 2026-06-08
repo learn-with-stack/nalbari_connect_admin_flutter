@@ -1,9 +1,9 @@
-import 'dart:async';
-import 'package:nalbari_connect/src/imports/imports.dart';
-import 'package:nalbari_connect/src/features/auth/domain/entities/user.dart';
-import 'package:nalbari_connect/src/features/auth/domain/repositories/auth_repository.dart';
+﻿import 'dart:async';
+import 'package:nalbari_connect_admin/src/imports/imports.dart';
+import 'package:nalbari_connect_admin/src/features/auth/domain/entities/user.dart';
+import 'package:nalbari_connect_admin/src/features/auth/domain/repositories/auth_repository.dart';
 
-import 'package:nalbari_connect/src/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:nalbari_connect_admin/src/features/auth/data/repositories/auth_repository_impl.dart';
 
 /// Provides the AuthRepository instance
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -84,4 +84,5 @@ class SessionNotifier extends StateNotifier<SessionState> {
     super.dispose();
   }
 }
+
 

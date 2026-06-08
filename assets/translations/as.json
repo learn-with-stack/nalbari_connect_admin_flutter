@@ -1,90 +1,57 @@
-{
+﻿{
   "app": {
-    "name": "নলবাৰী কানেক্ট",
-    "tagline": "নাগৰিক সেৱা আৰু প্ৰশাসনিক কাৰ্য এক সুৰক্ষিত এপত"
+    "name": "Nalbari Admin",
+    "tagline": "Office team dashboard"
   },
   "auth": {
-    "welcome": "স্বাগতম",
-    "phone_title": "ফোন নম্বৰেৰে লগইন কৰক",
-    "phone_number": "মোবাইল নম্বৰ",
-    "phone_hint": "9876543210",
-    "continue": "আগবাঢ়ক",
-    "otp_title": "পৰিচয় যাচাই",
-    "otp_subtitle": "আপোনাৰ ফোনলৈ অহা ৬ সংখ্যাৰ কোড দিয়ক",
+    "welcome": "Welcome",
+    "phone_title": "Admin phone login",
+    "phone_number": "Phone Number",
+    "phone_hint": "9999999999",
+    "continue": "Continue",
+    "otp_title": "Verify Identity",
+    "otp_subtitle": "Enter OTP",
     "otp": "OTP",
-    "verify": "যাচাই কৰি লগইন কৰক",
-    "secured": "আপোনাৰ তথ্য সুৰক্ষিত আৰু এনক্ৰিপ্টেড",
-    "demo_hint": "ডেমো OTP: 123456. এডমিন ফোন: 9999999999"
+    "verify": "Verify and Login",
+    "secured": "Secured and encrypted",
+    "demo_hint": "Admin: 9999999999. OTP: 123456"
   },
   "onboarding": {
-    "title": "নলবাৰীক নেতৃত্বৰ সৈতে সংযোগ কৰা",
-    "subtitle": "খবৰ পঢ়ক, সাক্ষাৎ বুক কৰক, অভিযোগ দিয়ক আৰু কাৰ্যৰ অৱস্থা চাওক।",
-    "language": "ভাষা বাছনি কৰক",
-    "location_title": "লোকেচন অনুমতি",
-    "location_subtitle": "লোকেচনে অভিযোগ সঠিক ৱাৰ্ড বা পঞ্চায়তৰ সৈতে সংযোগ কৰাত সহায় কৰে।",
-    "start": "আৰম্ভ কৰক"
-  },
-  "home": {
-    "latest_news": "শেহতীয়া খবৰ",
-    "book_appointment": "সাক্ষাৎ বুক কৰক",
-    "raise_complaint": "অভিযোগ দিয়ক",
-    "profile": "প্ৰফাইল",
-    "logout": "লগআউট"
-  },
-  "appointment": {
-    "title": "সাক্ষাৎ বুক কৰক",
-    "select_date": "তাৰিখ বাছনি কৰক",
-    "select_time": "সময় বাছনি কৰক",
-    "full_name": "সম্পূৰ্ণ নাম",
-    "full_name_hint": "আপোনাৰ সম্পূৰ্ণ নাম লিখক",
-    "id_proof": "আইডি প্ৰমাণ",
-    "upload_id": "আইডি প্ৰমাণ আপলোড কৰক",
-    "id_saved": "সংৰক্ষিত আইডি প্ৰমাণ ব্যৱহাৰ কৰা হ'ব",
-    "book": "সাক্ষাৎ বুক কৰক",
-    "success": "সাক্ষাৎ অনুৰোধ জমা হ'ল"
-  },
-  "complaint": {
-    "title": "অভিযোগ দিয়ক",
-    "area_type": "এলেকাৰ ধৰণ",
-    "ward": "ৱাৰ্ড",
-    "panchayat": "পঞ্চায়ত",
-    "ward_number": "ৱাৰ্ড নম্বৰ",
-    "panchayat_number": "পঞ্চায়ত নম্বৰ",
-    "describe": "আপোনাৰ অভিযোগ লিখক",
-    "describe_hint": "অভিযোগৰ বিৱৰণ দিয়ক...",
-    "media": "ফটো বা ভিডিঅ' যোগ কৰক (ঐচ্ছিক)",
-    "upload_media": "ফটো বা ভিডিঅ' আপলোড কৰক",
-    "submit": "অভিযোগ জমা দিয়ক",
-    "success": "অভিযোগ জমা হ'ল"
+    "title": "Admin office control room",
+    "subtitle": "Review appointments and complaints.",
+    "language": "Choose language",
+    "location_title": "Location permission",
+    "location_subtitle": "Location helps validate complaint coordinates.",
+    "start": "Get started"
   },
   "admin": {
-    "dashboard": "এডমিন ডেশ্বব'ৰ্ড",
-    "search": "অনুৰোধ সন্ধান কৰক...",
-    "appointments": "সাক্ষাৎ",
-    "complaints": "অভিযোগ",
-    "pending": "অপেক্ষাৰত",
-    "approved": "অনুমোদিত",
-    "rejected": "নাকচ",
-    "total": "মুঠ",
-    "all": "সকলো",
-    "approve": "অনুমোদন",
-    "reject": "নাকচ",
-    "all_appointments": "সকলো সাক্ষাৎ"
+    "dashboard": "Admin Dashboard",
+    "search": "Search requests...",
+    "appointments": "Appointments",
+    "complaints": "Complaints",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "total": "Total",
+    "all": "All",
+    "approve": "Approve",
+    "reject": "Reject",
+    "all_appointments": "All Appointments"
   },
   "profile": {
-    "title": "প্ৰফাইল",
-    "appointments": "সাক্ষাৎ",
-    "complaints": "অভিযোগ",
-    "settings": "ছেটিংছ",
-    "about": "এপৰ বিষয়ে",
+    "title": "Admin Profile",
+    "appointments": "Appointments",
+    "complaints": "Complaints",
+    "settings": "Settings",
+    "about": "About App",
     "faq": "FAQ",
-    "privacy": "গোপনীয়তা আৰু সুৰক্ষা"
+    "privacy": "Privacy & Security"
   },
   "settings": {
-    "title": "ছেটিংছ",
-    "language": "ভাষা",
-    "notifications": "নটিফিকেচন",
-    "dark_mode": "ছিষ্টেম থিম অনুসৰণ কৰক",
-    "version": "ভাৰ্চন"
+    "title": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "dark_mode": "Follow system theme",
+    "version": "Version"
   }
 }

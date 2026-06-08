@@ -1,5 +1,5 @@
-import 'package:nalbari_connect/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect/src/imports/imports.dart';
+﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
+import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -10,7 +10,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController(text: '9876543210');
+  final _phoneController = TextEditingController(text: '9999999999');
 
   @override
   void dispose() {
@@ -165,7 +165,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 SizedBox(height: 30.h),
                 Text(
-                  'Privacy Policy   |   Support\nCopyright 2024 Nalbari Connect | Secure Gateway',
+                  'Privacy Policy   |   Support\nCopyright 2024 Nalbari Admin | Secure Gateway',
                   textAlign: TextAlign.center,
                   style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
                 ),
@@ -209,42 +209,24 @@ class _DemoLoginCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Demo accounts', style: context.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w900)),
+            Text('Demo admin account', style: context.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w900)),
             SizedBox(height: 8.h),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      onPick('9876543210');
-                      context.showSuccessSnackBar('Citizen demo number selected.');
-                    },
-                    icon: const Icon(Icons.person_outline),
-                    label: const Text('User'),
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      onPick('9999999999');
-                      context.showSuccessSnackBar('Admin demo number selected.');
-                    },
-                    icon: const Icon(Icons.admin_panel_settings_outlined),
-                    label: const Text('Admin'),
-                  ),
-                ),
-              ],
+            OutlinedButton.icon(
+              onPressed: () {
+                onPick('9999999999');
+                context.showSuccessSnackBar('Admin demo number selected.');
+              },
+              icon: const Icon(Icons.admin_panel_settings_outlined),
+              label: const Text('Use Admin Demo Login'),
             ),
             SizedBox(height: 4.h),
-            Text('User: 9876543210 | Admin: 9999999999', style: context.textTheme.labelSmall),
+            Text('Admin: 9999999999 | OTP: 123456', style: context.textTheme.labelSmall),
           ],
         ),
       ),
     );
   }
 }
-
 class _InfoTile extends StatelessWidget {
   const _InfoTile({required this.icon, required this.title, required this.body});
 
@@ -295,3 +277,7 @@ class _PatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PatternPainter oldDelegate) => oldDelegate.color != color;
 }
+
+
+
+

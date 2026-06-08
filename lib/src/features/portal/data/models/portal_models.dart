@@ -1,10 +1,12 @@
-enum AppointmentStatus { pending, approved, rejected }
+﻿enum AppointmentStatus { pending, approved, rejected }
 
 enum ComplaintStatus { newRequest, inReview, resolved }
 
 enum ComplaintPriority { low, medium, high }
 
 enum AreaType { ward, panchayat }
+
+enum AdminNotificationType { appointment, complaint, system }
 
 class NewsItem {
   const NewsItem({
@@ -207,5 +209,63 @@ AreaType _areaTypeFromJson(String value) {
   return AreaType.values.firstWhere(
     (areaType) => areaType.name == value,
     orElse: () => AreaType.ward,
+  );
+}
+
+class AdminNotificationItem {
+  const AdminNotificationItem({
+    required this.id,
+    required this.title,
+    required this.message,
+    required this.type,
+    required this.createdAt,
+    this.isRead = false,
+  });
+
+  final String id;
+  final String title;
+  final String message;
+  final AdminNotificationType type;
+  final DateTime createdAt;
+  final bool isRead;
+
+  factory AdminNotificationItem.fromJson(Map<String, dynamic> json) {
+    return AdminNotificationItem(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      message: json['message'] as String,
+      type: _adminNotificationTypeFromJson(json['type'] as String),
+      createdAt: DateTime.parse(json['created_at'] as String),
+      isRead: json['is_read'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'message': message,
+      'type': type.name,
+      'created_at': createdAt.toIso8601String(),
+      'is_read': isRead,
+    };
+  }
+
+  AdminNotificationItem copyWith({bool? isRead}) {
+    return AdminNotificationItem(
+      id: id,
+      title: title,
+      message: message,
+      type: type,
+      createdAt: createdAt,
+      isRead: isRead ?? this.isRead,
+    );
+  }
+}
+
+AdminNotificationType _adminNotificationTypeFromJson(String value) {
+  return AdminNotificationType.values.firstWhere(
+    (type) => type.name == value,
+    orElse: () => AdminNotificationType.system,
   );
 }

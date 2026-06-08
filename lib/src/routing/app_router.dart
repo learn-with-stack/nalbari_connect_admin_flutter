@@ -1,22 +1,17 @@
-import 'package:flutter/foundation.dart';
+﻿import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nalbari_connect/src/features/auth/data/models/app_session.dart';
-import 'package:nalbari_connect/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect/src/features/auth/presentation/screens/login_screen.dart';
-import 'package:nalbari_connect/src/features/auth/presentation/screens/otp_screen.dart';
-import 'package:nalbari_connect/src/features/auth/presentation/screens/splash_screen.dart';
-import 'package:nalbari_connect/src/features/auth/presentation/screens/signup_screen.dart';
-import 'package:nalbari_connect/src/features/auth/presentation/screens/forgot_password_screen.dart';
-import 'package:nalbari_connect/src/features/onboarding/presentation/screens/onboarding_page.dart';
-import 'package:nalbari_connect/src/features/portal/data/models/portal_models.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/screens/admin_dashboard_screen.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/screens/appointment_screen.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/screens/citizen_home_screen.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/screens/complaint_screen.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/screens/profile_screen.dart';
-import 'package:nalbari_connect/src/routing/app_routes.dart';
-import 'package:nalbari_connect/src/routing/global_navigator.dart';
+import 'package:nalbari_connect_admin/src/features/auth/data/models/app_session.dart';
+import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
+import 'package:nalbari_connect_admin/src/features/auth/presentation/screens/login_screen.dart';
+import 'package:nalbari_connect_admin/src/features/auth/presentation/screens/otp_screen.dart';
+import 'package:nalbari_connect_admin/src/features/auth/presentation/screens/splash_screen.dart';
+import 'package:nalbari_connect_admin/src/features/onboarding/presentation/screens/onboarding_page.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/screens/admin_dashboard_screen.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/screens/notifications_screen.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/screens/profile_screen.dart';
+import 'package:nalbari_connect_admin/src/routing/app_routes.dart';
+import 'package:nalbari_connect_admin/src/routing/global_navigator.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final refreshNotifier = _RouterRefreshNotifier();
@@ -36,8 +31,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         AppRoutes.onboarding,
         AppRoutes.login,
         AppRoutes.verifyOtp,
-        AppRoutes.signup,
-        AppRoutes.forgotPassword,
       };
 
       if (auth.status == AuthStatus.unknown) {
@@ -48,24 +41,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         if (location == AppRoutes.splash) {
           return auth.hasCompletedLanguageSetup ? AppRoutes.login : AppRoutes.onboarding;
         }
-        if (publicRoutes.contains(location)) {
-          return null;
-        }
+        if (publicRoutes.contains(location)) return null;
         return AppRoutes.login;
       }
 
-      if (publicRoutes.contains(location)) {
-        return auth.isAdmin ? AppRoutes.adminDashboard : AppRoutes.citizenHome;
-      }
-
-      if (location == AppRoutes.adminDashboard && !auth.isAdmin) {
-        return AppRoutes.citizenHome;
-      }
-
-      if (location == AppRoutes.citizenHome && auth.isAdmin) {
-        return AppRoutes.adminDashboard;
-      }
-
+      if (publicRoutes.contains(location)) return AppRoutes.adminDashboard;
       return null;
     },
     routes: [
@@ -90,39 +70,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const OtpScreen(),
       ),
       GoRoute(
-        path: AppRoutes.signup,
-        name: 'signup',
-        builder: (context, state) => const SignupScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.forgotPassword,
-        name: 'forgotPassword',
-        builder: (context, state) => const ForgotPasswordScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.citizenHome,
-        name: 'citizenHome',
-        builder: (context, state) => const CitizenHomeScreen(),
-      ),
-      GoRoute(
         path: AppRoutes.adminDashboard,
         name: 'adminDashboard',
         builder: (context, state) => const AdminDashboardScreen(),
       ),
       GoRoute(
-        path: AppRoutes.newsDetail,
-        name: 'newsDetail',
-        builder: (context, state) => NewsDetailScreen(item: state.extra! as NewsItem),
-      ),
-      GoRoute(
-        path: AppRoutes.bookAppointment,
-        name: 'bookAppointment',
-        builder: (context, state) => const AppointmentScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.raiseComplaint,
-        name: 'raiseComplaint',
-        builder: (context, state) => const ComplaintScreen(),
+        path: AppRoutes.notifications,
+        name: 'notifications',
+        builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
         path: AppRoutes.profile,
@@ -138,8 +93,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.about,
         name: 'about',
         builder: (context, state) => const StaticInfoScreen(
-          title: 'About App',
-          body: 'Nalbari Connect is a prototype civic application for news, appointments, complaints, profile tracking, and executive review. The current build uses fake API data and is ready to connect to the real backend once response contracts are finalized.',
+          title: 'About Admin App',
+          body: 'Nalbari Admin is a prototype executive dashboard for approving appointment requests, reviewing public complaints, tracking notifications, and validating backend API contracts with fake async responses.',
         ),
       ),
       GoRoute(
@@ -147,7 +102,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'faq',
         builder: (context, state) => const StaticInfoScreen(
           title: 'FAQ',
-          body: '1. Login uses phone and OTP.\n\n2. Citizens can book appointments and raise complaints.\n\n3. Admin users can approve or reject appointment requests and review complaints.\n\n4. ID proof is linked once and reused for future appointment requests.',
+          body: '1. Login uses phone and OTP.\n\n2. Demo admin phone is 9999999999.\n\n3. Demo OTP is 123456.\n\n4. Appointment approve/reject and complaint status changes use fake API calls now, ready for backend replacement later.',
         ),
       ),
       GoRoute(
@@ -155,7 +110,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'privacy',
         builder: (context, state) => const StaticInfoScreen(
           title: 'Privacy & Security',
-          body: 'The production backend should use HTTPS, short-lived tokens, encrypted storage for phone and ID proof metadata, role-based access control, audit logs for admin actions, and strict media validation. This prototype stores only a fake token and demo profile data locally.',
+          body: 'Production should use HTTPS, encrypted token storage, role-based access control, staff audit logs, media validation, and strict Firebase notification topic permissions. This build stores only fake demo data locally.',
         ),
       ),
     ],
@@ -165,3 +120,5 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 class _RouterRefreshNotifier extends ChangeNotifier {
   void refresh() => notifyListeners();
 }
+
+

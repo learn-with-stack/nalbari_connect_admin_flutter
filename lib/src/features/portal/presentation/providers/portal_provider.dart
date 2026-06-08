@@ -1,8 +1,11 @@
+﻿import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:nalbari_connect/src/features/portal/data/models/portal_models.dart';
-import 'package:nalbari_connect/src/features/portal/data/services/fake_portal_repository.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/providers/fake_api_controls_provider.dart';
+import 'package:nalbari_connect_admin/src/features/portal/data/models/portal_models.dart';
+import 'package:nalbari_connect_admin/src/features/portal/data/services/fake_portal_repository.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/fake_api_controls_provider.dart';
+import 'package:nalbari_connect_admin/src/services/notification_service.dart';
 
 final portalRepositoryProvider = Provider<FakePortalRepository>((ref) {
   return FakePortalRepository(ref.watch(fakeApiControlsProvider));
@@ -13,13 +16,17 @@ final newsProvider = FutureProvider<List<NewsItem>>((ref) {
 });
 
 final portalControllerProvider = StateNotifierProvider<PortalController, PortalState>((ref) {
-  return PortalController(ref.watch(portalRepositoryProvider));
+  final controller = PortalController(ref.watch(portalRepositoryProvider));
+  final subscription = NotificationService.instance.adminMessages.listen(controller.addNotification);
+  ref.onDispose(subscription.cancel);
+  return controller;
 });
 
 class PortalState {
   const PortalState({
     this.appointments = const [],
     this.complaints = const [],
+    this.notifications = const [],
     this.isLoading = true,
     this.isMutating = false,
     this.error,
@@ -28,14 +35,18 @@ class PortalState {
 
   final List<AppointmentRequest> appointments;
   final List<ComplaintRequest> complaints;
+  final List<AdminNotificationItem> notifications;
   final bool isLoading;
   final bool isMutating;
   final String? error;
   final String? lastMessage;
 
+  int get unreadNotifications => notifications.where((item) => !item.isRead).length;
+
   PortalState copyWith({
     List<AppointmentRequest>? appointments,
     List<ComplaintRequest>? complaints,
+    List<AdminNotificationItem>? notifications,
     bool? isLoading,
     bool? isMutating,
     String? error,
@@ -46,6 +57,7 @@ class PortalState {
     return PortalState(
       appointments: appointments ?? this.appointments,
       complaints: complaints ?? this.complaints,
+      notifications: notifications ?? this.notifications,
       isLoading: isLoading ?? this.isLoading,
       isMutating: isMutating ?? this.isMutating,
       error: clearError ? null : error ?? this.error,
@@ -64,13 +76,17 @@ class PortalController extends StateNotifier<PortalState> {
   Future<void> load() async {
     state = state.copyWith(isLoading: true, clearError: true, clearMessage: true);
     try {
-      final appointments = await _repository.fetchAppointments();
-      final complaints = await _repository.fetchComplaints();
+      final results = await Future.wait<dynamic>([
+        _repository.fetchAppointments(),
+        _repository.fetchComplaints(),
+        _repository.fetchNotifications(),
+      ]);
       state = PortalState(
-        appointments: appointments,
-        complaints: complaints,
+        appointments: results[0] as List<AppointmentRequest>,
+        complaints: results[1] as List<ComplaintRequest>,
+        notifications: results[2] as List<AdminNotificationItem>,
         isLoading: false,
-        lastMessage: 'Latest fake API data loaded.',
+        lastMessage: 'Latest fake admin API data loaded.',
       );
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
@@ -110,9 +126,9 @@ class PortalController extends StateNotifier<PortalState> {
   Future<void> updateAppointmentStatus(String id, AppointmentStatus status) async {
     state = state.copyWith(isMutating: true, clearError: true, clearMessage: true);
     AppointmentRequest? existing;
-    for (final appointment in state.appointments) {
-      if (appointment.id == id) {
-        existing = appointment;
+    for (final item in state.appointments) {
+      if (item.id == id) {
+        existing = item;
         break;
       }
     }
@@ -139,9 +155,9 @@ class PortalController extends StateNotifier<PortalState> {
   Future<void> updateComplaintStatus(String id, ComplaintStatus status) async {
     state = state.copyWith(isMutating: true, clearError: true, clearMessage: true);
     ComplaintRequest? existing;
-    for (final complaint in state.complaints) {
-      if (complaint.id == id) {
-        existing = complaint;
+    for (final item in state.complaints) {
+      if (item.id == id) {
+        existing = item;
         break;
       }
     }
@@ -164,4 +180,25 @@ class PortalController extends StateNotifier<PortalState> {
       rethrow;
     }
   }
+
+  void addNotification(AdminNotificationItem notification) {
+    state = state.copyWith(notifications: [notification, ...state.notifications]);
+  }
+
+  void markNotificationRead(String id) {
+    state = state.copyWith(
+      notifications: [
+        for (final notification in state.notifications)
+          notification.id == id ? notification.copyWith(isRead: true) : notification,
+      ],
+    );
+  }
+
+  void markAllNotificationsRead() {
+    state = state.copyWith(
+      notifications: [for (final notification in state.notifications) notification.copyWith(isRead: true)],
+    );
+  }
 }
+
+

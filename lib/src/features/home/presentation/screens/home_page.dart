@@ -1,7 +1,7 @@
-import 'package:nalbari_connect/src/imports/core_imports.dart';
-import 'package:nalbari_connect/src/imports/packages_imports.dart';
+﻿import 'package:nalbari_connect_admin/src/imports/core_imports.dart';
+import 'package:nalbari_connect_admin/src/imports/packages_imports.dart';
 
-import 'package:nalbari_connect/src/features/auth/presentation/providers/session_provider.dart';
+import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/session_provider.dart';
 
 
 class HomePage extends ConsumerWidget {
@@ -59,3 +59,4 @@ class HomePage extends ConsumerWidget {
     );
   }
 }
+

@@ -1,5 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
+﻿import 'package:flutter_riverpod/legacy.dart';
 
 final fakeApiControlsProvider = StateNotifierProvider<FakeApiControlsController, FakeApiControls>((ref) {
   return FakeApiControlsController();
@@ -44,3 +43,4 @@ class FakeApiException implements Exception {
   @override
   String toString() => '$message\nReason: $reason';
 }
+

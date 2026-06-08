@@ -1,5 +1,5 @@
-import 'package:nalbari_connect/src/utils/utils.dart';
-import 'package:nalbari_connect/src/features/auth/domain/entities/user.dart';
+﻿import 'package:nalbari_connect_admin/src/utils/utils.dart';
+import 'package:nalbari_connect_admin/src/features/auth/domain/entities/user.dart';
 
 abstract class AuthRepository {
   /// Stream of auth state changes. Emits AppUser when authenticated, null when not.
@@ -29,4 +29,5 @@ abstract class AuthRepository {
   /// Check if the user is currently authenticated natively
   FutureEither<AppUser?> checkAuthState();
 }
+
 

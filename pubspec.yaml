@@ -1,5 +1,5 @@
-name: nalbari_connect
-description: A unified community and executive portal for the Nalbari Constituency. Provides citizens with news updates, grievance reporting by ward/panchayat, and appointment booking, while dynamically switching to an administrative dashboard for leadership triage management.
+﻿name: nalbari_connect_admin
+description: A mobile admin dashboard for the Nalbari office team to approve appointment requests, review public complaints, and track citizen service actions.
 publish_to: "none"
 version: 1.0.0+1
 
@@ -23,13 +23,13 @@ dependencies:
   equatable: ^2.0.7
   flutter_riverpod: ^3.2.1
 
-  # Backend – Firebase
+  # Backend â€“ Firebase
   firebase_core: ^4.9.0
   firebase_messaging: ^16.3.0
 
-  # Backend – Supabase
+  # Backend â€“ Supabase
 
-  # Backend – Appwrite
+  # Backend â€“ Appwrite
 
   # Storage
   hive_ce: ^2.19.3
@@ -110,3 +110,4 @@ flutter_launcher_icons:
   adaptive_icon_background: "#EEF2FF"
   adaptive_icon_foreground: "assets/images/logo.png"
   remove_alpha_ios: true
+

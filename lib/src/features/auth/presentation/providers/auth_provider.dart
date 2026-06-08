@@ -1,8 +1,8 @@
-import 'package:nalbari_connect/src/imports/core_imports.dart';
-import 'package:nalbari_connect/src/imports/packages_imports.dart';
+﻿import 'package:nalbari_connect_admin/src/imports/core_imports.dart';
+import 'package:nalbari_connect_admin/src/imports/packages_imports.dart';
 
-import 'package:nalbari_connect/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:nalbari_connect/src/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:nalbari_connect_admin/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:nalbari_connect_admin/src/features/auth/data/repositories/auth_repository_impl.dart';
 
 // Provides the single instance of AuthRepositoryImpl 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -86,4 +86,5 @@ class AuthController extends StateNotifier<bool> {
     );
   }
 }
+
 

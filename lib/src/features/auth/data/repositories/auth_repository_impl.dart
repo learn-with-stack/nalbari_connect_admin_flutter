@@ -1,8 +1,8 @@
-import 'package:nalbari_connect/src/imports/core_imports.dart';
-import 'package:nalbari_connect/src/imports/packages_imports.dart';
+﻿import 'package:nalbari_connect_admin/src/imports/core_imports.dart';
+import 'package:nalbari_connect_admin/src/imports/packages_imports.dart';
 
-import 'package:nalbari_connect/src/features/auth/domain/entities/user.dart';
-import 'package:nalbari_connect/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:nalbari_connect_admin/src/features/auth/domain/entities/user.dart';
+import 'package:nalbari_connect_admin/src/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthService _authService = AuthService.instance;
@@ -97,3 +97,4 @@ class AuthRepositoryImpl implements AuthRepository {
     });
   }
 }
+

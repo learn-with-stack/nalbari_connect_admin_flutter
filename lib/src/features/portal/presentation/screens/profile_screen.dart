@@ -1,9 +1,9 @@
-import 'package:nalbari_connect/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect/src/features/portal/data/models/portal_models.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/providers/fake_api_controls_provider.dart';
-import 'package:nalbari_connect/src/features/portal/presentation/providers/portal_provider.dart';
-import 'package:nalbari_connect/src/features/settings/presentation/providers/app_settings_provider.dart';
-import 'package:nalbari_connect/src/imports/imports.dart';
+﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
+import 'package:nalbari_connect_admin/src/features/portal/data/models/portal_models.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/fake_api_controls_provider.dart';
+import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/portal_provider.dart';
+import 'package:nalbari_connect_admin/src/features/settings/presentation/providers/app_settings_provider.dart';
+import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -266,3 +266,4 @@ class StaticInfoScreen extends StatelessWidget {
     );
   }
 }
+

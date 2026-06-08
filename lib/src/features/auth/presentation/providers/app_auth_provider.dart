@@ -1,8 +1,7 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
-import 'package:nalbari_connect/src/features/auth/data/models/app_session.dart';
-import 'package:nalbari_connect/src/services/secure_storage_service.dart';
-import 'package:nalbari_connect/src/utils/logger.dart';
+﻿import 'package:flutter_riverpod/legacy.dart';
+import 'package:nalbari_connect_admin/src/features/auth/data/models/app_session.dart';
+import 'package:nalbari_connect_admin/src/services/secure_storage_service.dart';
+import 'package:nalbari_connect_admin/src/utils/logger.dart';
 
 final appAuthProvider = StateNotifierProvider<AppAuthController, AppAuthState>((ref) {
   return AppAuthController();
@@ -79,18 +78,17 @@ class AppAuthController extends StateNotifier<AppAuthState> {
     await Future<void>.delayed(const Duration(milliseconds: 650));
 
     final normalizedPhone = phone.replaceAll(RegExp(r'\D'), '');
-    final role = normalizedPhone == '9999999999' ? AppUserRole.admin : AppUserRole.citizen;
     final user = AppSessionUser(
-      id: role == AppUserRole.admin ? 'admin-001' : 'citizen-001',
+      id: 'admin-001',
       phone: normalizedPhone,
-      name: role == AppUserRole.admin ? 'Nalbari Office Admin' : 'Verified Resident',
-      role: role,
-      token: 'fake-jwt-token-$normalizedPhone',
+      name: 'Nalbari Office Admin',
+      role: AppUserRole.admin,
+      token: 'fake-admin-jwt-token-$normalizedPhone',
       idProofLinked: false,
     );
 
     await _persist(user);
-    AppLogger.success('[AUTH] Logged in as ${user.role.name}');
+    AppLogger.success('[AUTH] Admin logged in');
     state = AppAuthState(
       status: AuthStatus.authenticated,
       user: user,
@@ -139,3 +137,5 @@ class AppAuthController extends StateNotifier<AppAuthState> {
     await storage.write(_idProofKey, data['idProofLinked']!);
   }
 }
+
+

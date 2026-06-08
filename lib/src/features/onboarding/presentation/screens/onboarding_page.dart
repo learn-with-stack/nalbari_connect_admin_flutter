@@ -1,5 +1,5 @@
-import 'package:nalbari_connect/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect/src/imports/imports.dart';
+﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
+import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
 class OnboardingPage extends ConsumerWidget {
   const OnboardingPage({super.key});
@@ -51,13 +51,13 @@ class OnboardingPage extends ConsumerWidget {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'নলবাৰীক নেতৃত্বৰ সৈতে সংযোগ কৰা',
+                      'à¦¨à¦²à¦¬à¦¾à§°à§€à¦• à¦¨à§‡à¦¤à§ƒà¦¤à§à¦¬à§° à¦¸à§ˆà¦¤à§‡ à¦¸à¦‚à¦¯à§‹à¦— à¦•à§°à¦¾',
                       textAlign: TextAlign.center,
                       style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'नलबाड़ी को नेतृत्व से जोड़ना',
+                      'à¤¨à¤²à¤¬à¤¾à¤¡à¤¼à¥€ à¤•à¥‹ à¤¨à¥‡à¤¤à¥ƒà¤¤à¥à¤µ à¤¸à¥‡ à¤œà¥‹à¤¡à¤¼à¤¨à¤¾',
                       textAlign: TextAlign.center,
                       style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
@@ -65,7 +65,7 @@ class OnboardingPage extends ConsumerWidget {
                     const _SectionLabel(),
                     SizedBox(height: 14.h),
                     const _LanguageCard(
-                      title: 'অসমীয়া',
+                      title: 'à¦…à¦¸à¦®à§€à¦¯à¦¼à¦¾',
                       subtitle: 'Assamese',
                       locale: Locale('as'),
                     ),
@@ -77,7 +77,7 @@ class OnboardingPage extends ConsumerWidget {
                     ),
                     SizedBox(height: 10.h),
                     const _LanguageCard(
-                      title: 'हिन्दी',
+                      title: 'à¤¹à¤¿à¤¨à¥à¤¦à¥€',
                       subtitle: 'Hindi',
                       locale: Locale('hi'),
                     ),
@@ -105,7 +105,7 @@ class OnboardingPage extends ConsumerWidget {
                           ),
                           SizedBox(height: 2.h),
                           Text(
-                            'আৰম্ভ কৰক  |  शुरू करें',
+                            'à¦†à§°à¦®à§à¦­ à¦•à§°à¦•  |  à¤¶à¥à¤°à¥‚ à¤•à¤°à¥‡à¤‚',
                             style: context.textTheme.labelSmall?.copyWith(color: const Color(0xFF2E1500).withValues(alpha: 0.75)),
                           ),
                         ],
@@ -127,7 +127,7 @@ class OnboardingPage extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 14.h),
               child: Text(
-                'Copyright 2024 Nalbari Constituency | নলবাৰী বিধানসভা সমষ্টি',
+                'Copyright 2024 Nalbari Constituency | à¦¨à¦²à¦¬à¦¾à§°à§€ à¦¬à¦¿à¦§à¦¾à¦¨à¦¸à¦­à¦¾ à¦¸à¦®à¦·à§à¦Ÿà¦¿',
                 textAlign: TextAlign.center,
                 style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
               ),
@@ -150,7 +150,7 @@ class _SectionLabel extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Text(
-            'Language / ভাষা / भाषा',
+            'Language / à¦­à¦¾à¦·à¦¾ / à¤­à¤¾à¤·à¤¾',
             style: context.textTheme.labelSmall?.copyWith(
               color: context.colors.onSurfaceVariant,
               letterSpacing: 1.2,
@@ -253,3 +253,4 @@ class _TrustChip extends StatelessWidget {
     );
   }
 }
+

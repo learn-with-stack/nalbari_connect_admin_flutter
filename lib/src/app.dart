@@ -1,6 +1,6 @@
-import 'package:nalbari_connect/src/imports/core_imports.dart';
-import 'package:nalbari_connect/src/imports/packages_imports.dart';
-import 'package:nalbari_connect/src/features/settings/presentation/providers/app_settings_provider.dart';
+﻿import 'package:nalbari_connect_admin/src/imports/core_imports.dart';
+import 'package:nalbari_connect_admin/src/imports/packages_imports.dart';
+import 'package:nalbari_connect_admin/src/features/settings/presentation/providers/app_settings_provider.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -14,7 +14,7 @@ class App extends ConsumerWidget {
   Widget _buildMaterialApp(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(appSettingsProvider);
     return MaterialApp.router(
-      title: 'Nalbari Connect',
+      title: 'Nalbari Admin',
       debugShowCheckedModeBanner: false,
       theme: buildLightTheme(primaryColorHex: '#FF9933'),
       darkTheme: buildDarkTheme(primaryColorHex: '#FF9933'),
@@ -32,3 +32,5 @@ class App extends ConsumerWidget {
     );
   }
 }
+
+

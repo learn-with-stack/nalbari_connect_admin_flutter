@@ -1,5 +1,5 @@
-import 'package:nalbari_connect/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect/src/imports/imports.dart';
+﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
+import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -59,3 +59,4 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     );
   }
 }
+

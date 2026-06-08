@@ -1,5 +1,5 @@
-import 'package:nalbari_connect/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect/src/imports/imports.dart';
+﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
+import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
   const OtpScreen({super.key});
@@ -21,7 +21,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget build(BuildContext context) {
     final auth = ref.watch(appAuthProvider);
     final cs = context.colors;
-    final phone = auth.pendingPhone ?? '9876543210';
+    final phone = auth.pendingPhone ?? '9999999999';
     final masked = phone.length >= 3 ? '+91 ***** **${phone.substring(phone.length - 3)}' : '+91 ***** **892';
 
     return Scaffold(
@@ -151,7 +151,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 ),
                 SizedBox(height: 60.h),
                 Text(
-                  'Privacy Policy   |   Support\nCopyright 2024 Nalbari Connect | Secure Gateway',
+                  'Privacy Policy   |   Support\nCopyright 2024 Nalbari Admin | Secure Gateway',
                   textAlign: TextAlign.center,
                   style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
                 ),
@@ -171,9 +171,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         return;
       }
       if (!mounted) return;
-      final auth = ref.read(appAuthProvider);
-      context.showSuccessSnackBar(auth.isAdmin ? 'Admin login successful.' : 'Citizen login successful.');
-      context.go(auth.isAdmin ? AppRoutes.adminDashboard : AppRoutes.citizenHome);
+      context.showSuccessSnackBar('Admin login successful.');
+      context.go(AppRoutes.adminDashboard);
     } catch (error) {
       if (mounted) context.showErrorSnackBar('Login failed: $error');
     }
@@ -198,3 +197,7 @@ class _PatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PatternPainter oldDelegate) => oldDelegate.color != color;
 }
+
+
+
+
