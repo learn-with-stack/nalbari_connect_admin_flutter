@@ -13,16 +13,16 @@ class NotificationsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text('notifications.title'.tr()),
         actions: [
           TextButton(
             onPressed: notifications.isEmpty ? null : () => ref.read(portalControllerProvider.notifier).markAllNotificationsRead(),
-            child: const Text('Mark all'),
+            child: Text('notifications.mark_all'.tr()),
           ),
         ],
       ),
       body: notifications.isEmpty
-          ? const AppEmptyState(title: 'No notifications yet')
+          ? AppEmptyState(title: 'notifications.empty'.tr())
           : ListView.separated(
               padding: EdgeInsets.all(16.w),
               itemCount: notifications.length,
@@ -104,9 +104,10 @@ class _NotificationIcon extends StatelessWidget {
 
 String _timeAgo(DateTime date) {
   final diff = DateTime.now().difference(date);
-  if (diff.inMinutes < 1) return 'Just now';
-  if (diff.inHours < 1) return '${diff.inMinutes} min ago';
-  if (diff.inDays < 1) return '${diff.inHours} hours ago';
-  return '${diff.inDays} days ago';
+  if (diff.inMinutes < 1) return 'notifications.just_now'.tr();
+  if (diff.inHours < 1) return '${diff.inMinutes} ${'notifications.minutes_ago'.tr()}';
+  if (diff.inDays < 1) return '${diff.inHours} ${'notifications.hours_ago'.tr()}';
+  return '${diff.inDays} ${'notifications.days_ago'.tr()}';
 }
+
 

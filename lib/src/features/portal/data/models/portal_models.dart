@@ -8,6 +8,22 @@ enum AreaType { ward, panchayat }
 
 enum AdminNotificationType { appointment, complaint, system }
 
+class PaginatedResponse<T> {
+  const PaginatedResponse({
+    required this.items,
+    required this.page,
+    required this.limit,
+    required this.total,
+    required this.hasMore,
+  });
+
+  final List<T> items;
+  final int page;
+  final int limit;
+  final int total;
+  final bool hasMore;
+}
+
 class NewsItem {
   const NewsItem({
     required this.id,
@@ -54,6 +70,10 @@ class AppointmentRequest {
     required this.reason,
     required this.status,
     required this.createdAt,
+    this.phoneNumber,
+    this.idProofName,
+    this.adminNote,
+    this.updatedAt,
   });
 
   final String id;
@@ -64,6 +84,10 @@ class AppointmentRequest {
   final String reason;
   final AppointmentStatus status;
   final DateTime createdAt;
+  final String? phoneNumber;
+  final String? idProofName;
+  final String? adminNote;
+  final DateTime? updatedAt;
 
   factory AppointmentRequest.fromJson(Map<String, dynamic> json) {
     return AppointmentRequest(
@@ -75,6 +99,10 @@ class AppointmentRequest {
       reason: json['reason'] as String,
       status: _appointmentStatusFromJson(json['status'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),
+      phoneNumber: json['phone_number'] as String?,
+      idProofName: json['id_proof_name'] as String?,
+      adminNote: json['admin_note'] as String?,
+      updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String),
     );
   }
 
@@ -88,19 +116,33 @@ class AppointmentRequest {
       'reason': reason,
       'status': status.name,
       'created_at': createdAt.toIso8601String(),
+      'phone_number': phoneNumber,
+      'id_proof_name': idProofName,
+      'admin_note': adminNote,
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 
-  AppointmentRequest copyWith({AppointmentStatus? status}) {
+  AppointmentRequest copyWith({
+    AppointmentStatus? status,
+    DateTime? date,
+    String? time,
+    String? adminNote,
+    DateTime? updatedAt,
+  }) {
     return AppointmentRequest(
       id: id,
       fullName: fullName,
       withPerson: withPerson,
-      date: date,
-      time: time,
+      date: date ?? this.date,
+      time: time ?? this.time,
       reason: reason,
       status: status ?? this.status,
       createdAt: createdAt,
+      phoneNumber: phoneNumber,
+      idProofName: idProofName,
+      adminNote: adminNote ?? this.adminNote,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -115,9 +157,13 @@ class ComplaintRequest {
     required this.status,
     required this.priority,
     required this.createdAt,
+    this.title,
+    this.phoneNumber,
     this.mediaName,
     this.latitude,
     this.longitude,
+    this.adminAction,
+    this.updatedAt,
   });
 
   final String id;
@@ -128,9 +174,13 @@ class ComplaintRequest {
   final ComplaintStatus status;
   final ComplaintPriority priority;
   final DateTime createdAt;
+  final String? title;
+  final String? phoneNumber;
   final String? mediaName;
   final double? latitude;
   final double? longitude;
+  final String? adminAction;
+  final DateTime? updatedAt;
 
   factory ComplaintRequest.fromJson(Map<String, dynamic> json) {
     return ComplaintRequest(
@@ -142,9 +192,13 @@ class ComplaintRequest {
       status: _complaintStatusFromJson(json['status'] as String),
       priority: _complaintPriorityFromJson(json['priority'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),
+      title: json['title'] as String?,
+      phoneNumber: json['phone_number'] as String?,
       mediaName: json['media_name'] as String?,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
+      adminAction: json['admin_action'] as String?,
+      updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String),
     );
   }
 
@@ -158,15 +212,21 @@ class ComplaintRequest {
       'status': status.name,
       'priority': priority.name,
       'created_at': createdAt.toIso8601String(),
+      'title': title,
+      'phone_number': phoneNumber,
       'media_name': mediaName,
       'latitude': latitude,
       'longitude': longitude,
+      'admin_action': adminAction,
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 
   ComplaintRequest copyWith({
     ComplaintStatus? status,
     ComplaintPriority? priority,
+    String? adminAction,
+    DateTime? updatedAt,
   }) {
     return ComplaintRequest(
       id: id,
@@ -177,39 +237,15 @@ class ComplaintRequest {
       status: status ?? this.status,
       priority: priority ?? this.priority,
       createdAt: createdAt,
+      title: title,
+      phoneNumber: phoneNumber,
       mediaName: mediaName,
       latitude: latitude,
       longitude: longitude,
+      adminAction: adminAction ?? this.adminAction,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
-}
-
-AppointmentStatus _appointmentStatusFromJson(String value) {
-  return AppointmentStatus.values.firstWhere(
-    (status) => status.name == value,
-    orElse: () => AppointmentStatus.pending,
-  );
-}
-
-ComplaintStatus _complaintStatusFromJson(String value) {
-  return ComplaintStatus.values.firstWhere(
-    (status) => status.name == value,
-    orElse: () => ComplaintStatus.newRequest,
-  );
-}
-
-ComplaintPriority _complaintPriorityFromJson(String value) {
-  return ComplaintPriority.values.firstWhere(
-    (priority) => priority.name == value,
-    orElse: () => ComplaintPriority.medium,
-  );
-}
-
-AreaType _areaTypeFromJson(String value) {
-  return AreaType.values.firstWhere(
-    (areaType) => areaType.name == value,
-    orElse: () => AreaType.ward,
-  );
 }
 
 class AdminNotificationItem {
@@ -261,6 +297,34 @@ class AdminNotificationItem {
       isRead: isRead ?? this.isRead,
     );
   }
+}
+
+AppointmentStatus _appointmentStatusFromJson(String value) {
+  return AppointmentStatus.values.firstWhere(
+    (status) => status.name == value,
+    orElse: () => AppointmentStatus.pending,
+  );
+}
+
+ComplaintStatus _complaintStatusFromJson(String value) {
+  return ComplaintStatus.values.firstWhere(
+    (status) => status.name == value,
+    orElse: () => ComplaintStatus.newRequest,
+  );
+}
+
+ComplaintPriority _complaintPriorityFromJson(String value) {
+  return ComplaintPriority.values.firstWhere(
+    (priority) => priority.name == value,
+    orElse: () => ComplaintPriority.medium,
+  );
+}
+
+AreaType _areaTypeFromJson(String value) {
+  return AreaType.values.firstWhere(
+    (areaType) => areaType.name == value,
+    orElse: () => AreaType.ward,
+  );
 }
 
 AdminNotificationType _adminNotificationTypeFromJson(String value) {

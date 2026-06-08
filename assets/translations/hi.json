@@ -1,57 +1,12 @@
 ﻿{
-  "app": {
-    "name": "Nalbari Admin",
-    "tagline": "Office team dashboard"
-  },
-  "auth": {
-    "welcome": "Welcome",
-    "phone_title": "Admin phone login",
-    "phone_number": "Phone Number",
-    "phone_hint": "9999999999",
-    "continue": "Continue",
-    "otp_title": "Verify Identity",
-    "otp_subtitle": "Enter OTP",
-    "otp": "OTP",
-    "verify": "Verify and Login",
-    "secured": "Secured and encrypted",
-    "demo_hint": "Admin: 9999999999. OTP: 123456"
-  },
-  "onboarding": {
-    "title": "Admin office control room",
-    "subtitle": "Review appointments and complaints.",
-    "language": "Choose language",
-    "location_title": "Location permission",
-    "location_subtitle": "Location helps validate complaint coordinates.",
-    "start": "Get started"
-  },
-  "admin": {
-    "dashboard": "Admin Dashboard",
-    "search": "Search requests...",
-    "appointments": "Appointments",
-    "complaints": "Complaints",
-    "pending": "Pending",
-    "approved": "Approved",
-    "rejected": "Rejected",
-    "total": "Total",
-    "all": "All",
-    "approve": "Approve",
-    "reject": "Reject",
-    "all_appointments": "All Appointments"
-  },
-  "profile": {
-    "title": "Admin Profile",
-    "appointments": "Appointments",
-    "complaints": "Complaints",
-    "settings": "Settings",
-    "about": "About App",
-    "faq": "FAQ",
-    "privacy": "Privacy & Security"
-  },
-  "settings": {
-    "title": "Settings",
-    "language": "Language",
-    "notifications": "Notifications",
-    "dark_mode": "Follow system theme",
-    "version": "Version"
-  }
+  "app":{"name":"नलबाड़ी एडमिन","tagline":"कार्यालय टीम के लिए अपॉइंटमेंट और शिकायत समीक्षा"},
+  "auth":{"welcome":"स्वागत है","phone_title":"फोन नंबर से एडमिन लॉगिन","phone_number":"फोन नंबर","phone_hint":"9999999999","continue":"जारी रखें","otp_title":"पहचान सत्यापित करें","otp_subtitle":"फोन पर भेजा गया 6 अंकों का कोड दर्ज करें","otp":"ओटीपी","verify":"सत्यापित कर लॉगिन करें","secured":"आपकी जानकारी सुरक्षित और एन्क्रिप्टेड है","demo_hint":"डेमो एडमिन फोन: 9999999999. ओटीपी: 123456"},
+  "onboarding":{"title":"एडमिन कार्यालय कंट्रोल रूम","subtitle":"अपॉइंटमेंट समीक्षा, शिकायत प्रबंधन और सूचनाएं ट्रैक करें।","language":"भाषा चुनें","location_title":"लोकेशन अनुमति","location_subtitle":"बैकएंड जुड़ने पर शिकायत लोकेशन सत्यापित करने में मदद करता है।","start":"शुरू करें"},
+  "home":{"logout":"लॉगआउट"},
+  "complaint":{"ward":"वार्ड","panchayat":"पंचायत"},
+  "notifications":{"title":"नोटिफिकेशन","mark_all":"सभी पढ़ें","empty":"अभी कोई नोटिफिकेशन नहीं","just_now":"अभी","minutes_ago":"मिनट पहले","hours_ago":"घंटे पहले","days_ago":"दिन पहले"},
+  "admin":{"dashboard":"एडमिन डैशबोर्ड","search":"अनुरोध खोजें...","appointments":"अपॉइंटमेंट","complaints":"शिकायतें","pending":"लंबित","approved":"स्वीकृत","rejected":"अस्वीकृत","total":"कुल","all":"सभी","new":"नया","in_review":"समीक्षा में","resolved":"हल हुआ","approve":"स्वीकृत करें","reject":"अस्वीकृत करें","all_appointments":"सभी अपॉइंटमेंट","complaints_title":"शिकायत सूची","no_appointments":"कोई अपॉइंटमेंट नहीं मिला","no_complaints":"कोई शिकायत नहीं मिली","view_details":"विवरण देखें","update_complaint_status":"शिकायत स्थिति बदलें","end_of_list":"सभी डेटा लोड हो गया","appointment_details":"अपॉइंटमेंट विवरण","complaint_details":"शिकायत विवरण","name":"नाम","phone":"फोन","with":"साथ","with_person":"मीटिंग किससे","date":"तारीख","time":"समय","id_proof":"आईडी प्रमाण","reason":"कारण","admin_note":"एडमिन नोट","approve_appointment":"अपॉइंटमेंट स्वीकृत करें","reject_appointment":"अपॉइंटमेंट अस्वीकृत करें","invalid_schedule":"सही तारीख और समय दर्ज करें।","appointment_updated":"अपॉइंटमेंट अपडेट हुआ।","complaint_updated":"शिकायत अपडेट हुई।","save_changes":"सेव करें","area":"क्षेत्र","priority":"प्राथमिकता","issue":"मुद्दा","description":"विवरण","media":"मीडिया","location":"लोकेशन","status":"स्थिति","action_taken":"की गई कार्रवाई","high_priority":"उच्च प्राथमिकता","medium_priority":"मध्यम प्राथमिकता","low_priority":"कम प्राथमिकता","complaint":"शिकायत","minutes_ago":"मिनट पहले","hours_ago":"घंटे पहले","days_ago":"दिन पहले"},
+  "profile":{"title":"एडमिन प्रोफाइल","appointments":"अपॉइंटमेंट","complaints":"शिकायतें","settings":"सेटिंग्स","about":"ऐप के बारे में","faq":"सामान्य प्रश्न","privacy":"गोपनीयता और सुरक्षा","logout_success":"सफलतापूर्वक लॉगआउट हुआ।"},
+  "settings":{"title":"सेटिंग्स","language":"भाषा","language_changed":"भाषा बदल गई।","selected":"चयनित","notifications":"नोटिफिकेशन","notifications_enabled":"नोटिफिकेशन चालू हुआ।","notifications_disabled":"नोटिफिकेशन बंद हुआ।","fake_api_help":"बैकएंड तैयार न होने तक इस मोड का उपयोग करें। ऐप बाद की वास्तविक API जैसी async repository shape इस्तेमाल करता है।","notification_subtitle":"अपॉइंटमेंट और शिकायत अपडेट","theme":"थीम","theme_system":"सिस्टम","theme_light":"लाइट","theme_dark":"डार्क","theme_updated":"थीम अपडेट हुई।","fake_api_mode":"फेक API मोड","api_working":"वर्किंग","api_offline":"ऑफलाइन","api_server":"सर्वर","api_base_url":"API बेस URL","dark_mode":"सिस्टम थीम का पालन करें","version":"संस्करण"}
 }
+

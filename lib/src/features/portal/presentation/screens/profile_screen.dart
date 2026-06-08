@@ -53,7 +53,7 @@ class ProfileScreen extends ConsumerWidget {
               title: Text('home.logout'.tr()),
               onTap: () async {
                 await ref.read(appAuthProvider.notifier).logout();
-                if (context.mounted) context.showSuccessSnackBar('Logged out successfully.');
+                if (context.mounted) context.showSuccessSnackBar('profile.logout_success'.tr());
               },
             ),
           ),
@@ -144,42 +144,42 @@ class SettingsScreen extends ConsumerWidget {
                 onSelected: (_) async {
                   await context.setLocale(const Locale('en'));
                   if (!context.mounted) return;
-                  context.showSuccessSnackBar('Language changed to English.');
+                  context.showSuccessSnackBar('settings.language_changed'.tr());
                 },
               ),
               ChoiceChip(
-                label: const Text('Assamese'),
+                label: const Text('অসমীয়া'),
                 selected: context.locale.languageCode == 'as',
                 onSelected: (_) async {
                   await context.setLocale(const Locale('as'));
                   if (!context.mounted) return;
-                  context.showSuccessSnackBar('Language changed to Assamese.');
+                  context.showSuccessSnackBar('settings.language_changed'.tr());
                 },
               ),
               ChoiceChip(
-                label: const Text('Hindi'),
+                label: const Text('हिन्दी'),
                 selected: context.locale.languageCode == 'hi',
                 onSelected: (_) async {
                   await context.setLocale(const Locale('hi'));
                   if (!context.mounted) return;
-                  context.showSuccessSnackBar('Language changed to Hindi.');
+                  context.showSuccessSnackBar('settings.language_changed'.tr());
                 },
               ),
             ],
           ),
           SizedBox(height: 18.h),
-          Text('Theme', style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+          Text('settings.theme'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
           SizedBox(height: 10.h),
           SegmentedButton<ThemeMode>(
-            segments: const [
-              ButtonSegment(value: ThemeMode.system, label: Text('System'), icon: Icon(Icons.phone_android_outlined)),
-              ButtonSegment(value: ThemeMode.light, label: Text('Light'), icon: Icon(Icons.light_mode_outlined)),
-              ButtonSegment(value: ThemeMode.dark, label: Text('Dark'), icon: Icon(Icons.dark_mode_outlined)),
+            segments: [
+              ButtonSegment(value: ThemeMode.system, label: Text('settings.theme_system'.tr()), icon: const Icon(Icons.phone_android_outlined)),
+              ButtonSegment(value: ThemeMode.light, label: Text('settings.theme_light'.tr()), icon: const Icon(Icons.light_mode_outlined)),
+              ButtonSegment(value: ThemeMode.dark, label: Text('settings.theme_dark'.tr()), icon: const Icon(Icons.dark_mode_outlined)),
             ],
             selected: {settings.themeMode},
             onSelectionChanged: (value) {
               ref.read(appSettingsProvider.notifier).setThemeMode(value.first);
-              context.showSuccessSnackBar('Theme updated.');
+              context.showSuccessSnackBar('settings.theme_updated'.tr());
             },
           ),
           SizedBox(height: 12.h),
@@ -187,26 +187,26 @@ class SettingsScreen extends ConsumerWidget {
             value: settings.notificationsEnabled,
             onChanged: (value) {
               ref.read(appSettingsProvider.notifier).setNotificationsEnabled(value);
-              context.showSuccessSnackBar(value ? 'Notifications enabled.' : 'Notifications disabled.');
+              context.showSuccessSnackBar(value ? 'settings.notifications_enabled'.tr() : 'settings.notifications_disabled'.tr());
             },
             title: Text('settings.notifications'.tr()),
-            subtitle: const Text('Appointment and complaint updates'),
+            subtitle: Text('settings.notification_subtitle'.tr()),
           ),
           SizedBox(height: 18.h),
-          Text('Fake API mode', style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+          Text('settings.fake_api_mode'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
           SizedBox(height: 8.h),
           Text(
-            'Use this while backend is not ready. The app uses the same async repository shape that the real API will use later.',
+            'settings.fake_api_help'.tr(),
             style: context.textTheme.bodySmall?.copyWith(color: context.colors.onSurfaceVariant),
           ),
           SizedBox(height: 10.h),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SegmentedButton<FakeApiFailureMode>(
-              segments: const [
-                ButtonSegment(value: FakeApiFailureMode.none, label: Text('Working'), icon: Icon(Icons.cloud_done_outlined)),
-                ButtonSegment(value: FakeApiFailureMode.offline, label: Text('Offline'), icon: Icon(Icons.wifi_off_outlined)),
-                ButtonSegment(value: FakeApiFailureMode.serverError, label: Text('Server'), icon: Icon(Icons.error_outline)),
+              segments: [
+              ButtonSegment(value: FakeApiFailureMode.none, label: Text('settings.api_working'.tr()), icon: const Icon(Icons.cloud_done_outlined)),
+                ButtonSegment(value: FakeApiFailureMode.offline, label: Text('settings.api_offline'.tr()), icon: const Icon(Icons.wifi_off_outlined)),
+                ButtonSegment(value: FakeApiFailureMode.serverError, label: Text('settings.api_server'.tr()), icon: const Icon(Icons.error_outline)),
               ],
               selected: {fakeApi.failureMode},
               onSelectionChanged: (value) {
@@ -228,7 +228,7 @@ class SettingsScreen extends ConsumerWidget {
             color: context.colors.surface,
             child: ListTile(
               leading: const Icon(Icons.http_outlined),
-              title: const Text('API base URL'),
+              title: Text('settings.api_base_url'.tr()),
               subtitle: Text(dotenv.get('API_BASE_URL', fallback: 'Fake API enabled')),
             ),
           ),
@@ -266,4 +266,7 @@ class StaticInfoScreen extends StatelessWidget {
     );
   }
 }
+
+
+
 

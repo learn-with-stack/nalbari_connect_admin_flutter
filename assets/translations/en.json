@@ -1,57 +1,12 @@
 ﻿{
-  "app": {
-    "name": "Nalbari Admin",
-    "tagline": "Appointment approvals and complaint review for the office team"
-  },
-  "auth": {
-    "welcome": "Welcome",
-    "phone_title": "Admin sign in with phone number",
-    "phone_number": "Phone Number",
-    "phone_hint": "9999999999",
-    "continue": "Continue",
-    "otp_title": "Verify Identity",
-    "otp_subtitle": "Enter the 6-digit code sent to your phone",
-    "otp": "OTP",
-    "verify": "Verify and Login",
-    "secured": "Your information is secured and encrypted",
-    "demo_hint": "Demo admin phone: 9999999999. OTP: 123456"
-  },
-  "onboarding": {
-    "title": "Admin office control room",
-    "subtitle": "Review appointments, manage complaints, and track office notifications.",
-    "language": "Choose language",
-    "location_title": "Location permission",
-    "location_subtitle": "Location helps validate complaint coordinates when the backend is connected.",
-    "start": "Get started"
-  },
-  "admin": {
-    "dashboard": "Admin Dashboard",
-    "search": "Search requests...",
-    "appointments": "Appointments",
-    "complaints": "Complaints",
-    "pending": "Pending",
-    "approved": "Approved",
-    "rejected": "Rejected",
-    "total": "Total",
-    "all": "All",
-    "approve": "Approve",
-    "reject": "Reject",
-    "all_appointments": "All Appointments"
-  },
-  "profile": {
-    "title": "Admin Profile",
-    "appointments": "Appointments",
-    "complaints": "Complaints",
-    "settings": "Settings",
-    "about": "About App",
-    "faq": "FAQ",
-    "privacy": "Privacy & Security"
-  },
-  "settings": {
-    "title": "Settings",
-    "language": "Language",
-    "notifications": "Notifications",
-    "dark_mode": "Follow system theme",
-    "version": "Version"
-  }
+  "app":{"name":"Nalbari Admin","tagline":"Appointment approvals and complaint review for the office team"},
+  "auth":{"welcome":"Welcome","phone_title":"Admin sign in with phone number","phone_number":"Phone Number","phone_hint":"9999999999","continue":"Continue","otp_title":"Verify Identity","otp_subtitle":"Enter the 6-digit code sent to your phone","otp":"OTP","verify":"Verify and Login","secured":"Your information is secured and encrypted","demo_hint":"Demo admin phone: 9999999999. OTP: 123456"},
+  "onboarding":{"title":"Admin office control room","subtitle":"Review appointments, manage complaints, and track office notifications.","language":"Choose language","location_title":"Location permission","location_subtitle":"Location helps validate complaint coordinates when the backend is connected.","start":"Get started"},
+  "home":{"logout":"Logout"},
+  "complaint":{"ward":"Ward","panchayat":"Panchayat"},
+  "notifications":{"title":"Notifications","mark_all":"Mark all","empty":"No notifications yet","just_now":"Just now","minutes_ago":"min ago","hours_ago":"hours ago","days_ago":"days ago"},
+  "admin":{"dashboard":"Admin Dashboard","search":"Search requests...","appointments":"Appointments","complaints":"Complaints","pending":"Pending","approved":"Approved","rejected":"Rejected","total":"Total","all":"All","new":"New","in_review":"In Review","resolved":"Resolved","approve":"Approve","reject":"Reject","all_appointments":"All Appointments","complaints_title":"Patient Complaints","no_appointments":"No appointment requests found","no_complaints":"No complaints found","view_details":"View Details","update_complaint_status":"Update Complaint Status","end_of_list":"All data loaded","appointment_details":"Appointment Details","complaint_details":"Complaint Details","name":"Name","phone":"Phone","with":"with","with_person":"Meeting With","date":"Date","time":"Time","id_proof":"ID Proof","reason":"Reason","admin_note":"Admin Note","approve_appointment":"Approve Appointment","reject_appointment":"Reject Appointment","invalid_schedule":"Enter a valid date and time.","appointment_updated":"Appointment updated.","complaint_updated":"Complaint updated.","save_changes":"Save Changes","area":"Area","priority":"Priority","issue":"Issue","description":"Description","media":"Media","location":"Location","status":"Status","action_taken":"Action Taken","high_priority":"High Priority","medium_priority":"Medium Priority","low_priority":"Low Priority","complaint":"Complaint","minutes_ago":"min ago","hours_ago":"hours ago","days_ago":"days ago"},
+  "profile":{"title":"Admin Profile","appointments":"Appointments","complaints":"Complaints","settings":"Settings","about":"About App","faq":"FAQ","privacy":"Privacy & Security","logout_success":"Logged out successfully."},
+  "settings":{"title":"Settings","language":"Language","language_changed":"Language changed.","selected":"Selected","notifications":"Notifications","notifications_enabled":"Notifications enabled.","notifications_disabled":"Notifications disabled.","fake_api_help":"Use this while backend is not ready. The app uses the same async repository shape that the real API will use later.","notification_subtitle":"Appointment and complaint updates","theme":"Theme","theme_system":"System","theme_light":"Light","theme_dark":"Dark","theme_updated":"Theme updated.","fake_api_mode":"Fake API mode","api_working":"Working","api_offline":"Offline","api_server":"Server","api_base_url":"API base URL","dark_mode":"Follow system theme","version":"Version"}
 }
+

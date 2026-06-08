@@ -1,178 +1,157 @@
-# Nalbari Connect API Contract
+﻿# Nalbari Admin API Contract
 
-The Flutter app currently uses fake in-memory data with this shape. Keep the real API responses close to these contracts so the frontend can switch from fake repository to Dio calls with minimal changes.
-
-## Environment
-
-```env
-API_BASE_URL=https://your-backend.example.com/api/v1
-USE_FAKE_API=false
-```
+This document describes the JSON shape currently used by the Flutter fake API. The real backend should keep these response fields stable so the app can switch from fake repository to Dio calls by changing the repository implementation/base URL.
 
 ## Auth
 
-### POST `/auth/request-otp`
-
+### POST /auth/request-otp
 Request:
-
 ```json
-{
-  "phone": "9876543210"
-}
+{ "phone_number": "9999999999" }
 ```
-
 Response:
-
 ```json
-{
-  "success": true,
-  "otp_request_id": "otp_123"
-}
+{ "success": true, "request_id": "otp_req_001", "message": "OTP sent" }
 ```
 
-### POST `/auth/verify-otp`
-
+### POST /auth/verify-otp
 Request:
-
 ```json
-{
-  "phone": "9876543210",
-  "otp": "123456"
-}
+{ "phone_number": "9999999999", "otp": "123456" }
 ```
-
 Response:
-
 ```json
 {
   "token": "jwt-token",
   "user": {
-    "id": "citizen-001",
-    "name": "Verified Resident",
-    "phone": "9876543210",
-    "role": "citizen",
-    "id_proof_linked": false
+    "id": "admin-001",
+    "name": "Nalbari Office Admin",
+    "phone": "9999999999",
+    "role": "admin"
   }
 }
-```
-
-Allowed roles: `citizen`, `admin`.
-
-## News
-
-### GET `/news`
-
-Response:
-
-```json
-[
-  {
-    "id": "n1",
-    "title": "New Digital Services Portal Launched",
-    "summary": "Government introduces streamlined portal for citizen services.",
-    "body": "Full article text.",
-    "published_at": "2026-06-04T00:00:00Z"
-  }
-]
 ```
 
 ## Appointments
 
-### GET `/appointments`
-
+### GET /admin/appointments?page=1&limit=8
 Response:
-
-```json
-[
-  {
-    "id": "a1",
-    "full_name": "Sarah Johnson",
-    "with_person": "MLA Office",
-    "date": "2026-06-08",
-    "time": "10:30 AM",
-    "reason": "Annual checkup and blood pressure monitoring",
-    "status": "pending",
-    "created_at": "2026-06-05T00:00:00Z"
-  }
-]
-```
-
-Allowed statuses: `pending`, `approved`, `rejected`.
-
-### POST `/appointments`
-
-Request:
-
 ```json
 {
-  "full_name": "Verified Resident",
-  "date": "2026-06-08",
-  "time": "10:00 AM",
-  "reason": "Personal appointment request",
-  "id_proof_file_url": "https://storage.example.com/id-proof.jpg"
+  "items": [
+    {
+      "id": "a1",
+      "full_name": "Sarah Johnson",
+      "phone_number": "9876543210",
+      "with_person": "Michael Chen",
+      "date": "2026-06-08",
+      "time": "10:30 AM",
+      "reason": "Annual checkup and blood pressure monitoring",
+      "status": "pending",
+      "id_proof_name": "aadhaar_sarah.jpg",
+      "admin_note": null,
+      "created_at": "2026-06-05T09:00:00.000",
+      "updated_at": null
+    }
+  ],
+  "page": 1,
+  "limit": 8,
+  "total": 12,
+  "has_more": true
 }
 ```
 
-### PATCH `/appointments/{id}/status`
-
+### PATCH /admin/appointments/{id}/status
 Request:
-
 ```json
 {
   "status": "approved",
-  "remarks": "Approved by MLA office"
+  "date": "2026-06-08",
+  "time": "10:30 AM",
+  "admin_note": "Approved by admin."
 }
 ```
+Response: return the updated appointment object using the same fields as above.
+
+Allowed status values: `pending`, `approved`, `rejected`.
 
 ## Complaints
 
-### GET `/complaints`
-
+### GET /admin/complaints?page=1&limit=8
 Response:
-
-```json
-[
-  {
-    "id": "c1",
-    "reporter_name": "Verified Resident",
-    "area_type": "ward",
-    "area_number": "4",
-    "description": "Street light not working near school junction.",
-    "status": "newRequest",
-    "priority": "medium",
-    "media_url": null,
-    "latitude": 26.444,
-    "longitude": 91.441,
-    "created_at": "2026-06-05T00:00:00Z"
-  }
-]
-```
-
-Allowed area types: `ward`, `panchayat`.
-
-Allowed statuses: `newRequest`, `inReview`, `resolved`.
-
-Allowed priorities: `low`, `medium`, `high`.
-
-### POST `/complaints`
-
-Request:
-
 ```json
 {
-  "area_type": "ward",
-  "area_number": "4",
-  "description": "Road damage near market.",
-  "media_urls": ["https://storage.example.com/complaint.jpg"],
-  "latitude": 26.444,
-  "longitude": 91.441
+  "items": [
+    {
+      "id": "c1",
+      "reporter_name": "Jennifer Lee",
+      "phone_number": "9876500011",
+      "area_type": "ward",
+      "area_number": "7",
+      "title": "Long wait time in emergency room",
+      "description": "Had to wait over 3 hours despite severe pain.",
+      "status": "newRequest",
+      "priority": "high",
+      "media_name": "complaint_er_wait.jpg",
+      "latitude": 26.4446,
+      "longitude": 91.4411,
+      "admin_action": null,
+      "created_at": "2026-06-08T08:00:00.000",
+      "updated_at": null
+    }
+  ],
+  "page": 1,
+  "limit": 8,
+  "total": 9,
+  "has_more": true
 }
 ```
 
-## Security Notes
+### PATCH /admin/complaints/{id}/status
+Request:
+```json
+{
+  "status": "inReview",
+  "admin_action": "Assigned to helpdesk lead for verification."
+}
+```
+Response: return the updated complaint object using the same fields as above.
 
-- Use HTTPS only.
-- JWT must include role and user id.
-- Encrypt phone number and identity proof metadata at rest.
-- Admin actions should be logged with actor id, timestamp, action, and target id.
-- Media upload should validate MIME type and file size before storage.
+Allowed status values: `newRequest`, `inReview`, `resolved`.
+Allowed priority values: `low`, `medium`, `high`.
+Allowed area type values: `ward`, `panchayat`.
+
+## Notifications
+
+### GET /admin/notifications
+Response:
+```json
+{
+  "items": [
+    {
+      "id": "n1",
+      "title": "New appointment request",
+      "message": "Sarah Johnson requested a meeting for June 8 at 10:30 AM.",
+      "type": "appointment",
+      "created_at": "2026-06-08T09:10:00.000",
+      "is_read": false
+    }
+  ]
+}
+```
+
+Allowed type values: `appointment`, `complaint`, `system`.
+
+## Firebase Notification Payload
+
+Foreground/opened Firebase messages should include data fields like:
+```json
+{
+  "type": "complaint",
+  "title": "High priority complaint",
+  "message": "A new high priority complaint was submitted.",
+  "reference_id": "c1"
+}
+```
+
+The Flutter app maps `type` to the notification list and shows it in the notification badge/list.

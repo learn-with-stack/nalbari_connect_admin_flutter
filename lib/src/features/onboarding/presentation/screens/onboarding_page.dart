@@ -45,19 +45,19 @@ class OnboardingPage extends ConsumerWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'Connecting Nalbari with Leadership',
+                      'onboarding.subtitle'.tr(),
                       textAlign: TextAlign.center,
                       style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'à¦¨à¦²à¦¬à¦¾à§°à§€à¦• à¦¨à§‡à¦¤à§ƒà¦¤à§à¦¬à§° à¦¸à§ˆà¦¤à§‡ à¦¸à¦‚à¦¯à§‹à¦— à¦•à§°à¦¾',
+                      'নলবাৰী এডমিন কাৰ্যালয় ডেশ্ববৰ্ড',
                       textAlign: TextAlign.center,
                       style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'à¤¨à¤²à¤¬à¤¾à¤¡à¤¼à¥€ à¤•à¥‹ à¤¨à¥‡à¤¤à¥ƒà¤¤à¥à¤µ à¤¸à¥‡ à¤œà¥‹à¤¡à¤¼à¤¨à¤¾',
+                      'नलबाड़ी एडमिन कार्यालय डैशबोर्ड',
                       textAlign: TextAlign.center,
                       style: context.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
@@ -65,7 +65,7 @@ class OnboardingPage extends ConsumerWidget {
                     const _SectionLabel(),
                     SizedBox(height: 14.h),
                     const _LanguageCard(
-                      title: 'à¦…à¦¸à¦®à§€à¦¯à¦¼à¦¾',
+                      title: 'অসমীয়া',
                       subtitle: 'Assamese',
                       locale: Locale('as'),
                     ),
@@ -77,7 +77,7 @@ class OnboardingPage extends ConsumerWidget {
                     ),
                     SizedBox(height: 10.h),
                     const _LanguageCard(
-                      title: 'à¤¹à¤¿à¤¨à¥à¤¦à¥€',
+                      title: 'हिन्दी',
                       subtitle: 'Hindi',
                       locale: Locale('hi'),
                     ),
@@ -105,7 +105,7 @@ class OnboardingPage extends ConsumerWidget {
                           ),
                           SizedBox(height: 2.h),
                           Text(
-                            'à¦†à§°à¦®à§à¦­ à¦•à§°à¦•  |  à¤¶à¥à¤°à¥‚ à¤•à¤°à¥‡à¤‚',
+                            'আৰম্ভ কৰক  |  शुरू करें',
                             style: context.textTheme.labelSmall?.copyWith(color: const Color(0xFF2E1500).withValues(alpha: 0.75)),
                           ),
                         ],
@@ -127,7 +127,7 @@ class OnboardingPage extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 14.h),
               child: Text(
-                'Copyright 2024 Nalbari Constituency | à¦¨à¦²à¦¬à¦¾à§°à§€ à¦¬à¦¿à¦§à¦¾à¦¨à¦¸à¦­à¦¾ à¦¸à¦®à¦·à§à¦Ÿà¦¿',
+                'Copyright 2024 Nalbari Admin | নলবাৰী এডমিন',
                 textAlign: TextAlign.center,
                 style: context.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
               ),
@@ -150,7 +150,7 @@ class _SectionLabel extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Text(
-            'Language / à¦­à¦¾à¦·à¦¾ / à¤­à¤¾à¤·à¤¾',
+            'Language / ভাষা / भाषा',
             style: context.textTheme.labelSmall?.copyWith(
               color: context.colors.onSurfaceVariant,
               letterSpacing: 1.2,
@@ -183,7 +183,7 @@ class _LanguageCard extends StatelessWidget {
     return InkWell(
       onTap: () async {
         await context.setLocale(locale);
-        if (context.mounted) context.showSuccessSnackBar('Language changed.');
+        if (context.mounted) context.showSuccessSnackBar('settings.language_changed'.tr());
       },
       borderRadius: AppBorders.card,
       child: DecoratedBox(
@@ -215,7 +215,7 @@ class _LanguageCard extends StatelessWidget {
                     Text(title, style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
                     SizedBox(height: 3.h),
                     Text(
-                      selected ? 'Selected' : subtitle,
+                      selected ? 'settings.selected'.tr() : subtitle,
                       style: context.textTheme.labelSmall?.copyWith(
                         color: selected ? const Color(0xFFFF9933) : cs.onSurfaceVariant,
                         fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
@@ -253,4 +253,3 @@ class _TrustChip extends StatelessWidget {
     );
   }
 }
-

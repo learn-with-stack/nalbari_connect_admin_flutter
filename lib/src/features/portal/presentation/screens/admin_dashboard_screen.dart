@@ -22,84 +22,89 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     final state = ref.watch(portalControllerProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: context.colors.surface,
       body: RefreshIndicator(
         onRefresh: () => ref.read(portalControllerProvider.notifier).load(),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: _AdminHeader(
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification.metrics.extentAfter < 360) {
+              if (_tab == _AdminTab.appointments) {
+                ref.read(portalControllerProvider.notifier).loadMoreAppointments();
+              } else {
+                ref.read(portalControllerProvider.notifier).loadMoreComplaints();
+              }
+            }
+            return false;
+          },
+          child: CustomScrollView(
+            slivers: [
+              _AdminHeader(
                 unreadCount: state.unreadNotifications,
                 search: _search,
                 onSearchChanged: (value) => setState(() => _search = value),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: _TabStrip(
-                selected: _tab,
-                appointmentCount: state.appointments.length,
-                complaintCount: state.complaints.length,
-                onChanged: (tab) => setState(() => _tab = tab),
-              ),
-            ),
-            if (state.isLoading)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 170.h),
-                  child: const Center(child: CircularProgressIndicator()),
-                ),
-              )
-            else if (state.error != null)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(16.w),
-                  child: AppErrorWidget(
-                    message: state.error!,
-                    onRetry: () => ref.read(portalControllerProvider.notifier).load(),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _TabsHeaderDelegate(
+                  child: _TabStrip(
+                    selected: _tab,
+                    appointmentCount: state.appointmentTotal == 0 ? state.appointments.length : state.appointmentTotal,
+                    complaintCount: state.complaintTotal == 0 ? state.complaints.length : state.complaintTotal,
+                    onChanged: (tab) => setState(() => _tab = tab),
                   ),
                 ),
-              )
-            else if (_tab == _AdminTab.appointments)
-              SliverToBoxAdapter(
-                child: _AppointmentsPanel(
-                  appointments: state.appointments,
-                  search: _search,
-                  selectedFilter: _appointmentFilter,
-                  onFilterChanged: (filter) => setState(() => _appointmentFilter = filter),
-                ),
-              )
-            else
-              SliverToBoxAdapter(
-                child: _ComplaintsPanel(
-                  complaints: state.complaints,
-                  search: _search,
-                  selectedFilter: _complaintFilter,
-                  onFilterChanged: (filter) => setState(() => _complaintFilter = filter),
-                ),
               ),
-            SliverToBoxAdapter(child: SizedBox(height: 20.h)),
-          ],
+              if (state.isLoading)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 170.h),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+                )
+              else if (state.error != null)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: AppErrorWidget(
+                      message: state.error!,
+                      onRetry: () => ref.read(portalControllerProvider.notifier).load(),
+                    ),
+                  ),
+                )
+              else if (_tab == _AdminTab.appointments)
+                SliverToBoxAdapter(
+                  child: _AppointmentsPanel(
+                    appointments: state.appointments,
+                    search: _search,
+                    total: state.appointmentTotal,
+                    hasMore: state.hasMoreAppointments,
+                    isLoadingMore: state.isLoadingMoreAppointments,
+                    selectedFilter: _appointmentFilter,
+                    onFilterChanged: (filter) => setState(() => _appointmentFilter = filter),
+                  ),
+                )
+              else
+                SliverToBoxAdapter(
+                  child: _ComplaintsPanel(
+                    complaints: state.complaints,
+                    search: _search,
+                    total: state.complaintTotal,
+                    hasMore: state.hasMoreComplaints,
+                    isLoadingMore: state.isLoadingMoreComplaints,
+                    selectedFilter: _complaintFilter,
+                    onFilterChanged: (filter) => setState(() => _complaintFilter = filter),
+                  ),
+                ),
+              SliverToBoxAdapter(child: SizedBox(height: 20.h)),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-        onDestinationSelected: (index) async {
-          if (index == 1) context.push(AppRoutes.notifications);
-          if (index == 2) context.push(AppRoutes.profile);
-          if (index == 3) context.push(AppRoutes.settings);
-        },
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: 'Dashboard'),
-          NavigationDestination(icon: Icon(Icons.notifications_outlined), selectedIcon: Icon(Icons.notifications), label: 'Alerts'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
-          NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
-        ],
       ),
     );
   }
 }
 
-class _AdminHeader extends ConsumerWidget {
+class _AdminHeader extends StatelessWidget {
   const _AdminHeader({required this.unreadCount, required this.search, required this.onSearchChanged});
 
   final int unreadCount;
@@ -107,44 +112,50 @@ class _AdminHeader extends ConsumerWidget {
   final ValueChanged<String> onSearchChanged;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(colors: [Color(0xFF334155), Color(0xFF475569)]),
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      stretch: true,
+      expandedHeight: 154.h,
+      backgroundColor: context.colors.onSurface,
+      surfaceTintColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          AppLogoMark(size: 34.w, radius: 8.r),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              'admin.dashboard'.tr(),
+              textAlign: TextAlign.center,
+              style: context.textTheme.titleMedium?.copyWith(color: context.colors.surfaceContainerLowest, fontWeight: FontWeight.w900),
+            ),
+          ),
+          _NotificationButton(unreadCount: unreadCount),
+          SizedBox(width: 2.w),
+          const _ProfileButton(),
+        ],
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(10.w, 12.h, 10.w, 20.h),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  AppLogoMark(size: 34.w, radius: 8.r),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: Text(
-                      'Admin Dashboard',
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                  _NotificationButton(unreadCount: unreadCount),
-                ],
-              ),
-              SizedBox(height: 18.h),
-              TextField(
+      flexibleSpace: FlexibleSpaceBar(
+        background: DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(colors: [Color(0xFF334155), Color(0xFF475569)]),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(12.w, 76.h, 12.w, 12.h),
+              child: TextField(
                 onChanged: onSearchChanged,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: 'Search requests...',
+                  hintText: 'admin.search'.tr(),
                   hintStyle: const TextStyle(color: Color(0xFFD8DEE9)),
                   prefixIcon: const Icon(Icons.search, color: Color(0xFFD8DEE9)),
                   filled: true,
-                  fillColor: Colors.white.withValues(alpha: 0.12),
+                  fillColor: context.colors.surfaceContainerLowest.withValues(alpha: 0.12),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.22)),
+                    borderSide: BorderSide(color: context.colors.surfaceContainerLowest.withValues(alpha: 0.22)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
@@ -152,12 +163,29 @@ class _AdminHeader extends ConsumerWidget {
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+class _TabsHeaderDelegate extends SliverPersistentHeaderDelegate {
+  const _TabsHeaderDelegate({required this.child});
+
+  final Widget child;
+
+  @override
+  double get minExtent => 58;
+
+  @override
+  double get maxExtent => 58;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => child;
+
+  @override
+  bool shouldRebuild(covariant _TabsHeaderDelegate oldDelegate) => oldDelegate.child != child;
 }
 
 class _NotificationButton extends StatelessWidget {
@@ -184,7 +212,7 @@ class _NotificationButton extends StatelessWidget {
                 padding: EdgeInsets.all(4.w),
                 child: Text(
                   unreadCount > 9 ? '9+' : '$unreadCount',
-                  style: context.textTheme.labelSmall?.copyWith(color: Colors.white, fontSize: 9.sp, fontWeight: FontWeight.w900),
+                  style: context.textTheme.labelSmall?.copyWith(color: context.colors.surfaceContainerLowest, fontSize: 9.sp, fontWeight: FontWeight.w900),
                 ),
               ),
             ),
@@ -194,6 +222,19 @@ class _NotificationButton extends StatelessWidget {
   }
 }
 
+
+class _ProfileButton extends StatelessWidget {
+  const _ProfileButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: 'profile.title'.tr(),
+      onPressed: () => context.push(AppRoutes.profile),
+      icon: const Icon(Icons.person_outline, color: Colors.white),
+    );
+  }
+}
 class _TabStrip extends StatelessWidget {
   const _TabStrip({required this.selected, required this.appointmentCount, required this.complaintCount, required this.onChanged});
 
@@ -205,19 +246,19 @@ class _TabStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: const BoxDecoration(color: Colors.white, border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0)))),
+      decoration: BoxDecoration(color: context.colors.surface, border: Border(bottom: BorderSide(color: context.colors.outlineVariant))),
       child: Row(
         children: [
           _TabButton(
             icon: Icons.calendar_month_outlined,
-            label: 'Appointments',
+            label: 'admin.appointments'.tr(),
             count: appointmentCount,
             selected: selected == _AdminTab.appointments,
             onTap: () => onChanged(_AdminTab.appointments),
           ),
           _TabButton(
             icon: Icons.chat_bubble_outline,
-            label: 'Complaints',
+            label: 'admin.complaints'.tr(),
             count: complaintCount,
             selected: selected == _AdminTab.complaints,
             onTap: () => onChanged(_AdminTab.complaints),
@@ -239,7 +280,7 @@ class _TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? const Color(0xFF2563EB) : const Color(0xFF64748B);
+    final color = selected ? context.colors.primary : context.colors.onSurfaceVariant;
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -286,10 +327,13 @@ class _CountPill extends StatelessWidget {
 }
 
 class _AppointmentsPanel extends ConsumerWidget {
-  const _AppointmentsPanel({required this.appointments, required this.search, required this.selectedFilter, required this.onFilterChanged});
+  const _AppointmentsPanel({required this.appointments, required this.search, required this.total, required this.hasMore, required this.isLoadingMore, required this.selectedFilter, required this.onFilterChanged});
 
   final List<AppointmentRequest> appointments;
   final String search;
+  final int total;
+  final bool hasMore;
+  final bool isLoadingMore;
   final AppointmentStatus? selectedFilter;
   final ValueChanged<AppointmentStatus?> onFilterChanged;
 
@@ -310,36 +354,37 @@ class _AppointmentsPanel extends ConsumerWidget {
       child: Column(
         children: [
           Row(children: [
-            Expanded(child: _StatusStatCard(label: 'Pending', value: pending, icon: Icons.schedule, color: const Color(0xFFEA580C), bg: const Color(0xFFFFF7ED), onTap: () => onFilterChanged(AppointmentStatus.pending))),
+            Expanded(child: _StatusStatCard(label: 'admin.pending'.tr(), value: pending, icon: Icons.schedule, color: const Color(0xFFEA580C), bg: const Color(0xFFFFF7ED), onTap: () => onFilterChanged(AppointmentStatus.pending))),
             SizedBox(width: 10.w),
-            Expanded(child: _StatusStatCard(label: 'Approved', value: approved, icon: Icons.check_circle_outline, color: const Color(0xFF16A34A), bg: const Color(0xFFF0FDF4), onTap: () => onFilterChanged(AppointmentStatus.approved))),
+            Expanded(child: _StatusStatCard(label: 'admin.approved'.tr(), value: approved, icon: Icons.check_circle_outline, color: const Color(0xFF16A34A), bg: const Color(0xFFF0FDF4), onTap: () => onFilterChanged(AppointmentStatus.approved))),
           ]),
           SizedBox(height: 10.h),
           Row(children: [
-            Expanded(child: _StatusStatCard(label: 'Rejected', value: rejected, icon: Icons.cancel_outlined, color: const Color(0xFFDC2626), bg: const Color(0xFFFEF2F2), onTap: () => onFilterChanged(AppointmentStatus.rejected))),
+            Expanded(child: _StatusStatCard(label: 'admin.rejected'.tr(), value: rejected, icon: Icons.cancel_outlined, color: const Color(0xFFDC2626), bg: const Color(0xFFFEF2F2), onTap: () => onFilterChanged(AppointmentStatus.rejected))),
             SizedBox(width: 10.w),
-            Expanded(child: _StatusStatCard(label: 'Total', value: appointments.length, icon: Icons.calendar_month_outlined, color: const Color(0xFF2563EB), bg: const Color(0xFFEFF6FF), onTap: () => onFilterChanged(null))),
+            Expanded(child: _StatusStatCard(label: 'admin.total'.tr(), value: appointments.length, icon: Icons.calendar_month_outlined, color: const Color(0xFF2563EB), bg: const Color(0xFFEFF6FF), onTap: () => onFilterChanged(null))),
           ]),
           SizedBox(height: 12.h),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: [
-              _FilterPill(label: 'All', selected: selectedFilter == null, onTap: () => onFilterChanged(null)),
+              _FilterPill(label: 'admin.all'.tr(), selected: selectedFilter == null, onTap: () => onFilterChanged(null)),
               _FilterPill(label: 'Pending ($pending)', selected: selectedFilter == AppointmentStatus.pending, onTap: () => onFilterChanged(AppointmentStatus.pending)),
               _FilterPill(label: 'Approved ($approved)', selected: selectedFilter == AppointmentStatus.approved, onTap: () => onFilterChanged(AppointmentStatus.approved)),
               _FilterPill(label: 'Rejected ($rejected)', selected: selectedFilter == AppointmentStatus.rejected, onTap: () => onFilterChanged(AppointmentStatus.rejected)),
             ]),
           ),
           SizedBox(height: 14.h),
-          _SectionTitle(title: selectedFilter == null ? 'All Appointments' : '${_appointmentStatusLabel(selectedFilter!)} Appointments', count: filtered.length),
+          _SectionTitle(title: selectedFilter == null ? 'admin.all_appointments'.tr() : '${_appointmentStatusLabel(selectedFilter!)} ${'admin.appointments'.tr()}', count: filtered.length, loaded: appointments.length, total: total),
           SizedBox(height: 10.h),
           if (filtered.isEmpty)
-            const AppEmptyState(title: 'No appointment requests found')
+            AppEmptyState(title: 'admin.no_appointments'.tr())
           else
             for (final appointment in filtered) ...[
               _AppointmentCard(appointment: appointment),
               SizedBox(height: 10.h),
             ],
+          _PaginationFooter(isLoading: isLoadingMore, hasMore: hasMore),
         ],
       ),
     );
@@ -347,10 +392,13 @@ class _AppointmentsPanel extends ConsumerWidget {
 }
 
 class _ComplaintsPanel extends ConsumerWidget {
-  const _ComplaintsPanel({required this.complaints, required this.search, required this.selectedFilter, required this.onFilterChanged});
+  const _ComplaintsPanel({required this.complaints, required this.search, required this.total, required this.hasMore, required this.isLoadingMore, required this.selectedFilter, required this.onFilterChanged});
 
   final List<ComplaintRequest> complaints;
   final String search;
+  final int total;
+  final bool hasMore;
+  final bool isLoadingMore;
   final ComplaintStatus? selectedFilter;
   final ValueChanged<ComplaintStatus?> onFilterChanged;
 
@@ -371,32 +419,33 @@ class _ComplaintsPanel extends ConsumerWidget {
       child: Column(
         children: [
           Row(children: [
-            Expanded(child: _CompactStat(label: 'New', value: newCount, bg: const Color(0xFFFAF5FF), fg: const Color(0xFF9333EA))),
+            Expanded(child: _CompactStat(label: 'admin.new'.tr(), value: newCount, bg: const Color(0xFFFAF5FF), fg: const Color(0xFF9333EA))),
             SizedBox(width: 10.w),
-            Expanded(child: _CompactStat(label: 'In Review', value: reviewCount, bg: const Color(0xFFEFF6FF), fg: const Color(0xFF2563EB))),
+            Expanded(child: _CompactStat(label: 'admin.in_review'.tr(), value: reviewCount, bg: const Color(0xFFEFF6FF), fg: const Color(0xFF2563EB))),
             SizedBox(width: 10.w),
-            Expanded(child: _CompactStat(label: 'Resolved', value: resolvedCount, bg: const Color(0xFFF0FDF4), fg: const Color(0xFF16A34A))),
+            Expanded(child: _CompactStat(label: 'admin.resolved'.tr(), value: resolvedCount, bg: const Color(0xFFF0FDF4), fg: const Color(0xFF16A34A))),
           ]),
           SizedBox(height: 12.h),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: [
-              _FilterPill(label: 'All', selected: selectedFilter == null, onTap: () => onFilterChanged(null)),
+              _FilterPill(label: 'admin.all'.tr(), selected: selectedFilter == null, onTap: () => onFilterChanged(null)),
               _FilterPill(label: 'New ($newCount)', selected: selectedFilter == ComplaintStatus.newRequest, onTap: () => onFilterChanged(ComplaintStatus.newRequest)),
               _FilterPill(label: 'In Review ($reviewCount)', selected: selectedFilter == ComplaintStatus.inReview, onTap: () => onFilterChanged(ComplaintStatus.inReview)),
               _FilterPill(label: 'Resolved ($resolvedCount)', selected: selectedFilter == ComplaintStatus.resolved, onTap: () => onFilterChanged(ComplaintStatus.resolved)),
             ]),
           ),
           SizedBox(height: 14.h),
-          _SectionTitle(title: 'Patient Complaints', count: filtered.length),
+          _SectionTitle(title: 'admin.complaints_title'.tr(), count: filtered.length, loaded: complaints.length, total: total),
           SizedBox(height: 10.h),
           if (filtered.isEmpty)
-            const AppEmptyState(title: 'No complaints found')
+            AppEmptyState(title: 'admin.no_complaints'.tr())
           else
             for (final complaint in filtered) ...[
               _ComplaintCard(complaint: complaint),
               SizedBox(height: 10.h),
             ],
+          _PaginationFooter(isLoading: isLoadingMore, hasMore: hasMore),
         ],
       ),
     );
@@ -482,10 +531,10 @@ class _FilterPill extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppBorders.full,
         child: DecoratedBox(
-          decoration: BoxDecoration(color: selected ? const Color(0xFF334155) : const Color(0xFFF1F5F9), borderRadius: AppBorders.full),
+          decoration: BoxDecoration(color: selected ? context.colors.primary : context.colors.surfaceContainerHigh, borderRadius: AppBorders.full),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
-            child: Text(label, style: context.textTheme.labelMedium?.copyWith(color: selected ? Colors.white : const Color(0xFF475569), fontWeight: FontWeight.w800)),
+            child: Text(label, style: context.textTheme.labelMedium?.copyWith(color: selected ? context.colors.onPrimary : context.colors.onSurfaceVariant, fontWeight: FontWeight.w800)),
           ),
         ),
       ),
@@ -494,20 +543,46 @@ class _FilterPill extends StatelessWidget {
 }
 
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({required this.title, required this.count});
+  const _SectionTitle({required this.title, required this.count, required this.loaded, required this.total});
 
   final String title;
   final int count;
+  final int loaded;
+  final int total;
 
   @override
   Widget build(BuildContext context) {
     return Row(children: [
       Expanded(child: Text(title, style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900))),
-      Text('$count items', style: context.textTheme.labelMedium?.copyWith(color: const Color(0xFF64748B))),
+      Text('$count items', style: context.textTheme.labelMedium?.copyWith(color: context.colors.onSurfaceVariant)),
     ]);
   }
 }
 
+
+class _PaginationFooter extends StatelessWidget {
+  const _PaginationFooter({required this.isLoading, required this.hasMore});
+
+  final bool isLoading;
+  final bool hasMore;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (!hasMore) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Text('admin.end_of_list'.tr(), textAlign: TextAlign.center, style: context.textTheme.labelMedium?.copyWith(color: context.colors.onSurfaceVariant)),
+      );
+    }
+    return SizedBox(height: 8.h);
+  }
+}
 class _AppointmentCard extends ConsumerWidget {
   const _AppointmentCard({required this.appointment});
 
@@ -516,9 +591,12 @@ class _AppointmentCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final canAct = appointment.status == AppointmentStatus.pending;
-    return Card(
-      color: Colors.white,
-      child: Padding(
+    return InkWell(
+      onTap: () => _showAppointmentDetails(context, ref),
+      borderRadius: AppBorders.card,
+      child: Card(
+        color: context.colors.surfaceContainerLowest,
+        child: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -530,7 +608,7 @@ class _AppointmentCard extends ConsumerWidget {
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(appointment.fullName, style: context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900)),
               SizedBox(height: 2.h),
-              Text('with ${appointment.withPerson}', style: context.textTheme.labelMedium?.copyWith(color: const Color(0xFF64748B))),
+              Text('${'admin.with'.tr()} ${appointment.withPerson}', style: context.textTheme.labelMedium?.copyWith(color: context.colors.onSurfaceVariant)),
             ])),
             _AppointmentBadge(status: appointment.status),
           ]),
@@ -539,13 +617,46 @@ class _AppointmentCard extends ConsumerWidget {
           SizedBox(height: 5.h),
           _MetaRow(icon: Icons.schedule, text: appointment.time),
           SizedBox(height: 12.h),
-          Text('Reason: ${appointment.reason}', style: context.textTheme.bodySmall?.copyWith(color: const Color(0xFF334155))),
+          Text('${'admin.reason'.tr()}: ${appointment.reason}', style: context.textTheme.bodySmall?.copyWith(color: context.colors.onSurface)),
           if (canAct) ...[
             SizedBox(height: 14.h),
             Row(children: [
-              Expanded(child: OutlinedButton.icon(onPressed: () => _update(context, ref, AppointmentStatus.rejected), icon: const Icon(Icons.close, size: 16), label: const Text('Reject'))),
+              Expanded(child: OutlinedButton.icon(onPressed: () => _showAppointmentAction(context, ref, AppointmentStatus.rejected), icon: const Icon(Icons.close, size: 16), label: Text('admin.reject'.tr()))),
               SizedBox(width: 10.w),
-              Expanded(child: FilledButton.icon(onPressed: () => _update(context, ref, AppointmentStatus.approved), icon: const Icon(Icons.check, size: 16), label: const Text('Approve'), style: FilledButton.styleFrom(backgroundColor: const Color(0xFF16A34A)))),
+              Expanded(child: FilledButton.icon(onPressed: () => _showAppointmentAction(context, ref, AppointmentStatus.approved), icon: const Icon(Icons.check, size: 16), label: Text('admin.approve'.tr()), style: FilledButton.styleFrom(backgroundColor: const Color(0xFF16A34A)))),
+            ]),
+          ],
+        ]),
+      ),
+      ),
+    );
+  }
+
+  void _showAppointmentDetails(BuildContext context, WidgetRef ref) {
+    final canAct = appointment.status == AppointmentStatus.pending;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h + MediaQuery.of(context).viewInsets.bottom),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Row(children: [Expanded(child: Text('admin.appointment_details'.tr(), style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))), _AppointmentBadge(status: appointment.status)]),
+          SizedBox(height: 12.h),
+          _DetailRow(label: 'admin.name'.tr(), value: appointment.fullName),
+          _DetailRow(label: 'admin.phone'.tr(), value: appointment.phoneNumber ?? '-'),
+          _DetailRow(label: 'admin.with_person'.tr(), value: appointment.withPerson),
+          _DetailRow(label: 'admin.date'.tr(), value: _dateLabel(appointment.date)),
+          _DetailRow(label: 'admin.time'.tr(), value: appointment.time),
+          _DetailRow(label: 'admin.id_proof'.tr(), value: appointment.idProofName ?? '-'),
+          _DetailRow(label: 'admin.reason'.tr(), value: appointment.reason),
+          if (appointment.adminNote?.isNotEmpty ?? false) _DetailRow(label: 'admin.admin_note'.tr(), value: appointment.adminNote!),
+          if (canAct) ...[
+            SizedBox(height: 12.h),
+            Row(children: [
+              Expanded(child: OutlinedButton.icon(onPressed: () { Navigator.pop(context); _showAppointmentAction(context, ref, AppointmentStatus.rejected); }, icon: const Icon(Icons.close), label: Text('admin.reject'.tr()))),
+              SizedBox(width: 10.w),
+              Expanded(child: FilledButton.icon(onPressed: () { Navigator.pop(context); _showAppointmentAction(context, ref, AppointmentStatus.approved); }, icon: const Icon(Icons.check), label: Text('admin.approve'.tr()))),
             ]),
           ],
         ]),
@@ -553,13 +664,47 @@ class _AppointmentCard extends ConsumerWidget {
     );
   }
 
-  Future<void> _update(BuildContext context, WidgetRef ref, AppointmentStatus status) async {
-    try {
-      await ref.read(portalControllerProvider.notifier).updateAppointmentStatus(appointment.id, status);
-      if (context.mounted) context.showSuccessSnackBar('Appointment ${status.name}.');
-    } catch (error) {
-      if (context.mounted) context.showErrorSnackBar(error.toString());
-    }
+  void _showAppointmentAction(BuildContext context, WidgetRef ref, AppointmentStatus status) {
+    final dateController = TextEditingController(text: appointment.date.toIso8601String().split('T').first);
+    final timeController = TextEditingController(text: appointment.time);
+    final noteController = TextEditingController(text: appointment.adminNote ?? (status == AppointmentStatus.approved ? 'Approved by admin.' : 'Rejected by admin.'));
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h + MediaQuery.of(context).viewInsets.bottom),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Text(status == AppointmentStatus.approved ? 'admin.approve_appointment'.tr() : 'admin.reject_appointment'.tr(), style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
+          SizedBox(height: 12.h),
+          TextField(controller: dateController, decoration: InputDecoration(labelText: 'admin.date'.tr(), prefixIcon: const Icon(Icons.calendar_month_outlined))),
+          SizedBox(height: 10.h),
+          TextField(controller: timeController, decoration: InputDecoration(labelText: 'admin.time'.tr(), prefixIcon: const Icon(Icons.schedule))),
+          SizedBox(height: 10.h),
+          TextField(controller: noteController, minLines: 2, maxLines: 4, decoration: InputDecoration(labelText: 'admin.admin_note'.tr())),
+          SizedBox(height: 14.h),
+          FilledButton(
+            onPressed: () async {
+              final parsedDate = DateTime.tryParse(dateController.text.trim());
+              if (parsedDate == null || timeController.text.trim().isEmpty) {
+                context.showErrorSnackBar('admin.invalid_schedule'.tr());
+                return;
+              }
+              try {
+                await ref.read(portalControllerProvider.notifier).updateAppointmentStatus(appointment.id, status, date: parsedDate, time: timeController.text.trim(), adminNote: noteController.text.trim());
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  context.showSuccessSnackBar('admin.appointment_updated'.tr());
+                }
+              } catch (error) {
+                if (context.mounted) context.showErrorSnackBar(error.toString());
+              }
+            },
+            child: Text('admin.save_changes'.tr()),
+          ),
+        ]),
+      ),
+    );
   }
 }
 
@@ -570,9 +715,12 @@ class _ComplaintCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      color: Colors.white,
-      child: Padding(
+    return InkWell(
+      onTap: () => _showComplaintActions(context, ref),
+      borderRadius: AppBorders.card,
+      child: Card(
+        color: context.colors.surfaceContainerLowest,
+        child: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -584,7 +732,7 @@ class _ComplaintCard extends ConsumerWidget {
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(complaint.reporterName, style: context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900)),
               SizedBox(height: 2.h),
-              Text('${_timeAgo(complaint.createdAt)} • ${complaint.areaType.name} ${complaint.areaNumber}', style: context.textTheme.labelSmall?.copyWith(color: const Color(0xFF64748B))),
+              Text('${_timeAgo(complaint.createdAt)} • ${complaint.areaType.name} ${complaint.areaNumber}', style: context.textTheme.labelSmall?.copyWith(color: context.colors.onSurfaceVariant)),
             ])),
             Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
               _PriorityBadge(priority: complaint.priority),
@@ -595,7 +743,7 @@ class _ComplaintCard extends ConsumerWidget {
           SizedBox(height: 14.h),
           Text(_complaintTitle(complaint), style: context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900)),
           SizedBox(height: 8.h),
-          Text(complaint.description, style: context.textTheme.bodySmall?.copyWith(color: const Color(0xFF334155))),
+          Text(complaint.description, style: context.textTheme.bodySmall?.copyWith(color: context.colors.onSurface)),
           if (complaint.latitude != null && complaint.longitude != null) ...[
             SizedBox(height: 8.h),
             _MetaRow(icon: Icons.location_on_outlined, text: '${complaint.latitude!.toStringAsFixed(4)}, ${complaint.longitude!.toStringAsFixed(4)}'),
@@ -603,45 +751,90 @@ class _ComplaintCard extends ConsumerWidget {
           SizedBox(height: 12.h),
           FilledButton(
             onPressed: () => _showComplaintActions(context, ref),
-            style: FilledButton.styleFrom(backgroundColor: const Color(0xFF475569), minimumSize: Size.fromHeight(46.h)),
-            child: const Text('View Details'),
+            style: FilledButton.styleFrom(backgroundColor: context.colors.onSurfaceVariant, minimumSize: Size.fromHeight(46.h)),
+            child: Text('admin.view_details'.tr()),
           ),
         ]),
+      ),
       ),
     );
   }
 
   void _showComplaintActions(BuildContext context, WidgetRef ref) {
+    final actionController = TextEditingController(text: complaint.adminAction ?? '');
+    var selectedStatus = complaint.status;
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 24.h),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text('Update Complaint Status', style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
-          SizedBox(height: 12.h),
-          for (final status in ComplaintStatus.values) ...[
-            ListTile(
-              shape: const RoundedRectangleBorder(borderRadius: AppBorders.card),
-              leading: Icon(_complaintStatusIcon(status)),
-              title: Text(_complaintStatusLabel(status)),
-              onTap: () async {
-                Navigator.pop(context);
-                try {
-                  await ref.read(portalControllerProvider.notifier).updateComplaintStatus(complaint.id, status);
-                  if (context.mounted) context.showSuccessSnackBar('Complaint marked ${_complaintStatusLabel(status)}.');
-                } catch (error) {
-                  if (context.mounted) context.showErrorSnackBar(error.toString());
-                }
-              },
-            ),
-          ],
-        ]),
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setSheetState) => Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 24.h + MediaQuery.of(context).viewInsets.bottom),
+          child: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Row(children: [Expanded(child: Text('admin.complaint_details'.tr(), style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))), _ComplaintBadge(status: complaint.status)]),
+              SizedBox(height: 12.h),
+              _DetailRow(label: 'admin.name'.tr(), value: complaint.reporterName),
+              _DetailRow(label: 'admin.phone'.tr(), value: complaint.phoneNumber ?? '-'),
+              _DetailRow(label: 'admin.area'.tr(), value: '${complaint.areaType.name} ${complaint.areaNumber}'),
+              _DetailRow(label: 'admin.priority'.tr(), value: _priorityLabel(complaint.priority)),
+              _DetailRow(label: 'admin.issue'.tr(), value: _complaintTitle(complaint)),
+              _DetailRow(label: 'admin.description'.tr(), value: complaint.description),
+              _DetailRow(label: 'admin.media'.tr(), value: complaint.mediaName ?? '-'),
+              if (complaint.latitude != null && complaint.longitude != null) _DetailRow(label: 'admin.location'.tr(), value: '${complaint.latitude!.toStringAsFixed(4)}, ${complaint.longitude!.toStringAsFixed(4)}'),
+              SizedBox(height: 10.h),
+              DropdownButtonFormField<ComplaintStatus>(
+                initialValue: selectedStatus,
+                decoration: InputDecoration(labelText: 'admin.status'.tr()),
+                items: ComplaintStatus.values.map((status) => DropdownMenuItem(value: status, child: Text(_complaintStatusLabel(status)))).toList(),
+                onChanged: (status) => setSheetState(() => selectedStatus = status ?? selectedStatus),
+              ),
+              SizedBox(height: 10.h),
+              TextField(controller: actionController, minLines: 3, maxLines: 5, decoration: InputDecoration(labelText: 'admin.action_taken'.tr())),
+              SizedBox(height: 14.h),
+              FilledButton(
+                onPressed: () async {
+                  try {
+                    await ref.read(portalControllerProvider.notifier).updateComplaintStatus(
+                          complaint.id,
+                          selectedStatus,
+                          adminAction: actionController.text.trim().isEmpty ? 'Reviewed by admin.' : actionController.text.trim(),
+                        );
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      context.showSuccessSnackBar('admin.complaint_updated'.tr());
+                    }
+                  } catch (error) {
+                    if (context.mounted) context.showErrorSnackBar(error.toString());
+                  }
+                },
+                child: Text('admin.save_changes'.tr()),
+              ),
+            ]),
+          ),
+        ),
       ),
     );
   }
 }
+class _DetailRow extends StatelessWidget {
+  const _DetailRow({required this.label, required this.value});
 
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label, style: context.textTheme.labelSmall?.copyWith(color: context.colors.onSurfaceVariant, fontWeight: FontWeight.w800)),
+        SizedBox(height: 2.h),
+        Text(value, style: context.textTheme.bodyMedium),
+      ]),
+    );
+  }
+}
 class _MetaRow extends StatelessWidget {
   const _MetaRow({required this.icon, required this.text});
 
@@ -650,7 +843,7 @@ class _MetaRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [Icon(icon, size: 15.sp, color: const Color(0xFF64748B)), SizedBox(width: 6.w), Text(text, style: context.textTheme.labelMedium?.copyWith(color: const Color(0xFF475569)))]);
+    return Row(children: [Icon(icon, size: 15.sp, color: context.colors.onSurfaceVariant), SizedBox(width: 6.w), Text(text, style: context.textTheme.labelMedium?.copyWith(color: context.colors.onSurfaceVariant))]);
   }
 }
 
@@ -737,11 +930,12 @@ String _complaintStatusLabel(ComplaintStatus status) {
   };
 }
 
-IconData _complaintStatusIcon(ComplaintStatus status) {
-  return switch (status) {
-    ComplaintStatus.newRequest => Icons.fiber_new_outlined,
-    ComplaintStatus.inReview => Icons.manage_search_outlined,
-    ComplaintStatus.resolved => Icons.verified_outlined,
+
+String _priorityLabel(ComplaintPriority priority) {
+  return switch (priority) {
+    ComplaintPriority.high => 'admin.high_priority'.tr(),
+    ComplaintPriority.medium => 'admin.medium_priority'.tr(),
+    ComplaintPriority.low => 'admin.low_priority'.tr(),
   };
 }
 
@@ -763,6 +957,17 @@ String _timeAgo(DateTime date) {
   if (diff.inDays < 1) return '${diff.inHours} hours ago';
   return '${diff.inDays} days ago';
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
