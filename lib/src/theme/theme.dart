@@ -259,7 +259,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       visualDensity: VisualDensity.comfortable,
-      titleTextStyle: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+      titleTextStyle: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
       subtitleTextStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
     ),
 
@@ -322,7 +322,7 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
     badgeTheme: BadgeThemeData(
       backgroundColor: colorScheme.error,
       textColor: colorScheme.onError,
-      textStyle: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
+      textStyle: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onError),
     ),
 
     // Segmented Button Theme
