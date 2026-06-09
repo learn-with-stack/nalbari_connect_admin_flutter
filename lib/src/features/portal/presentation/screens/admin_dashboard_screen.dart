@@ -552,20 +552,28 @@ class _ComplaintCard extends ConsumerWidget {
             _DetailRow(label: 'admin.description'.tr(), value: complaint.description),
             _DetailRow(label: 'admin.media'.tr(), value: complaint.mediaName ?? '-'),
             if (complaint.latitude != null && complaint.longitude != null) _DetailRow(label: 'admin.location'.tr(), value: '${complaint.latitude!.toStringAsFixed(4)}, ${complaint.longitude!.toStringAsFixed(4)}'),
-            SizedBox(height: 10.h),
-            ValueListenableBuilder<ComplaintStatus>(
-              valueListenable: selectedStatus,
-              builder: (context, value, _) => DropdownButtonFormField<ComplaintStatus>(
-                initialValue: value,
-                decoration: InputDecoration(labelText: 'admin.status'.tr()),
-                items: ComplaintStatus.values.map((status) => DropdownMenuItem(value: status, child: Text(_complaintStatusLabel(status)))).toList(),
-                onChanged: (status) {
-                  if (status != null) selectedStatus.value = status;
-                },
-              ),
-            ),
-            SizedBox(height: 10.h),
-            TextField(controller: actionController, minLines: 3, maxLines: 5, decoration: InputDecoration(labelText: 'admin.action_taken'.tr())),
+            // SizedBox(height: 10.h),
+            // ValueListenableBuilder<ComplaintStatus>(
+            //   valueListenable: selectedStatus,
+            //   builder: (context, value, _) => DropdownButtonFormField<ComplaintStatus>(
+            //     initialValue: value,
+            //     decoration: InputDecoration(labelText: 'admin.status'.tr()),
+            //     items: ComplaintStatus.values.map((status) => DropdownMenuItem(value: status, child: Text(_complaintStatusLabel(status)))).toList(),
+            //     onChanged: (status) {
+            //       if (status != null) selectedStatus.value = status;
+            //     },
+            //   ),
+            // ),
+            // SizedBox(height: 10.h),
+            // TextField(controller: actionController, minLines: 3, maxLines: 5, decoration: InputDecoration(labelText: 'admin.action_taken'.tr())),
+            //show action taken text actionController  if not null or empty
+             if (complaint.adminAction != null && complaint.adminAction!.isNotEmpty) ...[
+              SizedBox(height: 10.h),
+              _DetailRow(label: 'admin.action_taken'.tr(), value: complaint.adminAction!),
+            ],
+            
+
+
             SizedBox(height: 14.h),
             FilledButton(
               onPressed: () async {
