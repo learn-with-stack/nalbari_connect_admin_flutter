@@ -9,7 +9,7 @@ class OtpScreen extends ConsumerStatefulWidget {
 }
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
-  final _otpController = TextEditingController(text: '123456');
+  final _otpController = TextEditingController(text: '555555');
 
   @override
   void dispose() {
@@ -21,7 +21,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget build(BuildContext context) {
     final auth = ref.watch(appAuthProvider);
     final cs = context.colors;
-    final phone = auth.pendingPhone ?? '9999999999';
+    final phone = auth.pendingPhone ?? '6207683772';
     final masked = phone.length >= 3 ? '+91 ***** **${phone.substring(phone.length - 3)}' : '+91 ***** **892';
 
     return Scaffold(
@@ -85,7 +85,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                               maxLength: 6,
                               textAlign: TextAlign.center,
                               style: context.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900, letterSpacing: 8),
-                              decoration: const InputDecoration(counterText: '', hintText: '123456'),
+                              decoration: const InputDecoration(counterText: '', hintText: '555555'),
                             ),
                             SizedBox(height: 20.h),
                             Text.rich(

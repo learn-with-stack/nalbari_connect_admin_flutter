@@ -9,7 +9,9 @@ import 'package:nalbari_connect_admin/src/utils/logger.dart';
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
-    await Firebase.initializeApp();
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp();
+    }
     AppLogger.info('[FCM] Background message: ${message.messageId}');
   } catch (_) {
     // Firebase native files may not be configured during prototype builds.
@@ -32,7 +34,9 @@ class NotificationService {
     }
 
     try {
-      await Firebase.initializeApp();
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp();
+      }
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
       final messaging = FirebaseMessaging.instance;
       final settings = await messaging.requestPermission(alert: true, badge: true, sound: true);

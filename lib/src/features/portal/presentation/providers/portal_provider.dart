@@ -3,12 +3,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:nalbari_connect_admin/src/features/portal/data/models/portal_models.dart';
-import 'package:nalbari_connect_admin/src/features/portal/data/services/fake_portal_repository.dart';
-import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/fake_api_controls_provider.dart';
+import 'package:nalbari_connect_admin/src/features/portal/data/services/admin_portal_repository.dart';
 import 'package:nalbari_connect_admin/src/services/notification_service.dart';
 
-final portalRepositoryProvider = Provider<FakePortalRepository>((ref) {
-  return FakePortalRepository(ref.watch(fakeApiControlsProvider));
+final portalRepositoryProvider = Provider<AdminPortalRepository>((ref) {
+  return AdminPortalRepository();
 });
 
 final newsProvider = FutureProvider<List<NewsItem>>((ref) {
@@ -105,14 +104,28 @@ class PortalController extends StateNotifier<PortalState> {
 
   static const _pageLimit = 4;
 
-  final FakePortalRepository _repository;
+  final AdminPortalRepository _repository;
 
-  Future<void> load() async {
+  Future<void> load({
+    AppointmentStatus? appointmentStatus,
+    ComplaintStatus? complaintStatus,
+    String? search,
+  }) async {
     state = state.copyWith(isLoading: true, clearError: true, clearMessage: true);
     try {
       final results = await Future.wait<dynamic>([
-        _repository.fetchAppointments(page: 1, limit: _pageLimit),
-        _repository.fetchComplaints(page: 1, limit: _pageLimit),
+        _repository.fetchAppointments(
+          page: 1,
+          limit: _pageLimit,
+          status: appointmentStatus,
+          search: search,
+        ),
+        _repository.fetchComplaints(
+          page: 1,
+          limit: _pageLimit,
+          status: complaintStatus,
+          search: search,
+        ),
         _repository.fetchNotifications(),
       ]);
       final appointmentPage = results[0] as PaginatedResponse<AppointmentRequest>;
@@ -128,18 +141,26 @@ class PortalController extends StateNotifier<PortalState> {
         hasMoreAppointments: appointmentPage.hasMore,
         hasMoreComplaints: complaintPage.hasMore,
         isLoading: false,
-        lastMessage: 'Latest fake admin API data loaded.',
+        lastMessage: 'Latest admin API data loaded.',
       );
     } catch (error) {
       state = state.copyWith(isLoading: false, error: error.toString());
     }
   }
 
-  Future<void> loadMoreAppointments() async {
+  Future<void> loadMoreAppointments({
+    AppointmentStatus? status,
+    String? search,
+  }) async {
     if (state.isLoading || state.isLoadingMoreAppointments || !state.hasMoreAppointments) return;
     state = state.copyWith(isLoadingMoreAppointments: true, clearError: true);
     try {
-      final page = await _repository.fetchAppointments(page: state.appointmentPage + 1, limit: _pageLimit);
+      final page = await _repository.fetchAppointments(
+        page: state.appointmentPage + 1,
+        limit: _pageLimit,
+        status: status,
+        search: search,
+      );
       state = state.copyWith(
         appointments: [...state.appointments, ...page.items],
         appointmentPage: page.page,
@@ -152,11 +173,19 @@ class PortalController extends StateNotifier<PortalState> {
     }
   }
 
-  Future<void> loadMoreComplaints() async {
+  Future<void> loadMoreComplaints({
+    ComplaintStatus? status,
+    String? search,
+  }) async {
     if (state.isLoading || state.isLoadingMoreComplaints || !state.hasMoreComplaints) return;
     state = state.copyWith(isLoadingMoreComplaints: true, clearError: true);
     try {
-      final page = await _repository.fetchComplaints(page: state.complaintPage + 1, limit: _pageLimit);
+      final page = await _repository.fetchComplaints(
+        page: state.complaintPage + 1,
+        limit: _pageLimit,
+        status: status,
+        search: search,
+      );
       state = state.copyWith(
         complaints: [...state.complaints, ...page.items],
         complaintPage: page.page,

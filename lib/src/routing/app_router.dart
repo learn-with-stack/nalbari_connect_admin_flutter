@@ -1,4 +1,5 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nalbari_connect_admin/src/features/auth/data/models/app_session.dart';
@@ -23,6 +24,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.splash,
     refreshListenable: refreshNotifier,
+    errorBuilder: (context, state) => const _RouteNotFoundScreen(),
     redirect: (context, state) {
       final auth = ref.read(appAuthProvider);
       final location = state.matchedLocation;
@@ -94,7 +96,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'about',
         builder: (context, state) => const StaticInfoScreen(
           title: 'About Admin App',
-          body: 'Nalbari Admin is a prototype executive dashboard for approving appointment requests, reviewing public complaints, tracking notifications, and validating backend API contracts with fake async responses.',
+          body: 'Nalbari Admin is an executive dashboard for approving appointment requests, reviewing public complaints, tracking notifications, and validating live backend API data.',
         ),
       ),
       GoRoute(
@@ -102,7 +104,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'faq',
         builder: (context, state) => const StaticInfoScreen(
           title: 'FAQ',
-          body: '1. Login uses phone and OTP.\n\n2. Demo admin phone is 9999999999.\n\n3. Demo OTP is 123456.\n\n4. Appointment approve/reject and complaint status changes use fake API calls now, ready for backend replacement later.',
+          body: '1. Login uses phone and Firebase OTP.\n\n2. Admin login is allowed only for the registered admin phone.\n\n3. Appointment approve/reject and complaint status changes call the original backend API.',
         ),
       ),
       GoRoute(
@@ -110,7 +112,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'privacy',
         builder: (context, state) => const StaticInfoScreen(
           title: 'Privacy & Security',
-          body: 'Production should use HTTPS, encrypted token storage, role-based access control, staff audit logs, media validation, and strict Firebase notification topic permissions. This build stores only fake demo data locally.',
+          body: 'The app uses encrypted token storage, role-based access control, staff audit logs, media validation, and strict Firebase notification topic permissions.',
         ),
       ),
     ],
@@ -121,4 +123,31 @@ class _RouterRefreshNotifier extends ChangeNotifier {
   void refresh() => notifyListeners();
 }
 
+class _RouteNotFoundScreen extends StatelessWidget {
+  const _RouteNotFoundScreen();
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Page not found')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, size: 48),
+              const SizedBox(height: 12),
+              const Text('This page is not available.'),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => context.go(AppRoutes.adminDashboard),
+                child: const Text('Go Dashboard'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -28,6 +28,9 @@ class AppConfig {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          if (options.data is FormData) {
+            options.headers.remove('Content-Type');
+          }
           final tokenResult = await SecureStorageService.instance.read('session.token');
           tokenResult.fold(
             (_) {},

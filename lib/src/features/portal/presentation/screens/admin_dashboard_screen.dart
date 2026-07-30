@@ -16,14 +16,24 @@ class AdminDashboardScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: context.colors.surface,
       body: RefreshIndicator(
-        onRefresh: () => ref.read(portalControllerProvider.notifier).load(),
+        onRefresh: () => ref.read(portalControllerProvider.notifier).load(
+              appointmentStatus: ui.appointmentFilter,
+              complaintStatus: ui.complaintFilter,
+              search: ui.search,
+            ),
         child: NotificationListener<ScrollNotification>(
           onNotification: (notification) {
             if (notification.metrics.extentAfter < 360) {
               if (ui.tab == AdminDashboardTab.appointments) {
-                ref.read(portalControllerProvider.notifier).loadMoreAppointments();
+                ref.read(portalControllerProvider.notifier).loadMoreAppointments(
+                      status: ui.appointmentFilter,
+                      search: ui.search,
+                    );
               } else {
-                ref.read(portalControllerProvider.notifier).loadMoreComplaints();
+                ref.read(portalControllerProvider.notifier).loadMoreComplaints(
+                      status: ui.complaintFilter,
+                      search: ui.search,
+                    );
               }
             }
             return false;
@@ -34,7 +44,14 @@ class AdminDashboardScreen extends ConsumerWidget {
               AdminSearchHeader(
                 unreadCount: state.unreadNotifications,
                 search: ui.search,
-                onSearchChanged: uiController.setSearch,
+                onSearchChanged: (value) {
+                  uiController.setSearch(value);
+                  ref.read(portalControllerProvider.notifier).load(
+                        appointmentStatus: ui.appointmentFilter,
+                        complaintStatus: ui.complaintFilter,
+                        search: value,
+                      );
+                },
               ),
               SliverPersistentHeader(
                 pinned: true,
@@ -60,7 +77,11 @@ class AdminDashboardScreen extends ConsumerWidget {
                     padding: EdgeInsets.all(16.w),
                     child: AppErrorWidget(
                       message: state.error!,
-                      onRetry: () => ref.read(portalControllerProvider.notifier).load(),
+                      onRetry: () => ref.read(portalControllerProvider.notifier).load(
+                            appointmentStatus: ui.appointmentFilter,
+                            complaintStatus: ui.complaintFilter,
+                            search: ui.search,
+                          ),
                     ),
                   ),
                 )
@@ -73,7 +94,14 @@ class AdminDashboardScreen extends ConsumerWidget {
                     hasMore: state.hasMoreAppointments,
                     isLoadingMore: state.isLoadingMoreAppointments,
                     selectedFilter: ui.appointmentFilter,
-                    onFilterChanged: uiController.setAppointmentFilter,
+                    onFilterChanged: (filter) {
+                      uiController.setAppointmentFilter(filter);
+                      ref.read(portalControllerProvider.notifier).load(
+                            appointmentStatus: filter,
+                            complaintStatus: ui.complaintFilter,
+                            search: ui.search,
+                          );
+                    },
                   ),
                 )
               else
@@ -85,7 +113,14 @@ class AdminDashboardScreen extends ConsumerWidget {
                     hasMore: state.hasMoreComplaints,
                     isLoadingMore: state.isLoadingMoreComplaints,
                     selectedFilter: ui.complaintFilter,
-                    onFilterChanged: uiController.setComplaintFilter,
+                    onFilterChanged: (filter) {
+                      uiController.setComplaintFilter(filter);
+                      ref.read(portalControllerProvider.notifier).load(
+                            appointmentStatus: ui.appointmentFilter,
+                            complaintStatus: filter,
+                            search: ui.search,
+                          );
+                    },
                   ),
                 ),
               SliverToBoxAdapter(child: SizedBox(height: 20.h)),
@@ -552,21 +587,20 @@ class _ComplaintCard extends ConsumerWidget {
             _DetailRow(label: 'admin.description'.tr(), value: complaint.description),
             _DetailRow(label: 'admin.media'.tr(), value: complaint.mediaName ?? '-'),
             if (complaint.latitude != null && complaint.longitude != null) _DetailRow(label: 'admin.location'.tr(), value: '${complaint.latitude!.toStringAsFixed(4)}, ${complaint.longitude!.toStringAsFixed(4)}'),
-            // SizedBox(height: 10.h),
-            // ValueListenableBuilder<ComplaintStatus>(
-            //   valueListenable: selectedStatus,
-            //   builder: (context, value, _) => DropdownButtonFormField<ComplaintStatus>(
-            //     initialValue: value,
-            //     decoration: InputDecoration(labelText: 'admin.status'.tr()),
-            //     items: ComplaintStatus.values.map((status) => DropdownMenuItem(value: status, child: Text(_complaintStatusLabel(status)))).toList(),
-            //     onChanged: (status) {
-            //       if (status != null) selectedStatus.value = status;
-            //     },
-            //   ),
-            // ),
-            // SizedBox(height: 10.h),
-            // TextField(controller: actionController, minLines: 3, maxLines: 5, decoration: InputDecoration(labelText: 'admin.action_taken'.tr())),
-            //show action taken text actionController  if not null or empty
+            SizedBox(height: 10.h),
+            ValueListenableBuilder<ComplaintStatus>(
+              valueListenable: selectedStatus,
+              builder: (context, value, _) => DropdownButtonFormField<ComplaintStatus>(
+                initialValue: value,
+                decoration: InputDecoration(labelText: 'admin.status'.tr()),
+                items: ComplaintStatus.values.map((status) => DropdownMenuItem(value: status, child: Text(_complaintStatusLabel(status)))).toList(),
+                onChanged: (status) {
+                  if (status != null) selectedStatus.value = status;
+                },
+              ),
+            ),
+            SizedBox(height: 10.h),
+            TextField(controller: actionController, minLines: 3, maxLines: 5, decoration: InputDecoration(labelText: 'admin.action_taken'.tr())),
              if (complaint.adminAction != null && complaint.adminAction!.isNotEmpty) ...[
               SizedBox(height: 10.h),
               _DetailRow(label: 'admin.action_taken'.tr(), value: complaint.adminAction!),
@@ -722,9 +756,7 @@ String _priorityLabel(ComplaintPriority priority) {
 }
 
 String _complaintTitle(ComplaintRequest complaint) {
-  if (complaint.description.toLowerCase().contains('billing')) return 'admin.mock_billing_issue'.tr();
-  if (complaint.description.toLowerCase().contains('wait')) return 'admin.mock_wait_issue'.tr();
-  if (complaint.description.toLowerCase().contains('street')) return 'admin.mock_street_issue'.tr();
+  if (complaint.title?.isNotEmpty ?? false) return complaint.title!;
   return '${_areaTypeLabel(complaint.areaType)} ${complaint.areaNumber} ${'admin.complaint'.tr()}';
 }
 

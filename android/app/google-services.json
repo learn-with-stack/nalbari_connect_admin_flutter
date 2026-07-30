@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1074247345910",
+    "project_id": "nalbari-connect",
+    "storage_bucket": "nalbari-connect.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074247345910:android:30761dc83a6e9884826ed7",
+        "android_client_info": {
+          "package_name": "com.nalbari_connect.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7J2C_sKyJ3GIhf0j5WkeiabiJUHR-Ss4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074247345910:android:2520800cedb94d8b826ed7",
+        "android_client_info": {
+          "package_name": "com.nalbari_connect.user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7J2C_sKyJ3GIhf0j5WkeiabiJUHR-Ss4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

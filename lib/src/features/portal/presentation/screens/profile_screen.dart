@@ -1,6 +1,4 @@
 ﻿import 'package:nalbari_connect_admin/src/features/auth/presentation/providers/app_auth_provider.dart';
-import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/fake_api_controls_provider.dart';
-import 'package:nalbari_connect_admin/src/features/portal/presentation/providers/portal_provider.dart';
 import 'package:nalbari_connect_admin/src/features/settings/presentation/providers/app_settings_provider.dart';
 import 'package:nalbari_connect_admin/src/imports/imports.dart';
 
@@ -32,7 +30,7 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    '+91 ${user?.phone ?? '9999999999'}',
+                    '+91 ${user?.phone ?? '6207683772'}',
                     textAlign: TextAlign.center,
                     style: context.textTheme.bodyMedium?.copyWith(color: context.colors.onSurfaceVariant),
                   ),
@@ -118,8 +116,6 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(appSettingsProvider);
-    final fakeApi = ref.watch(fakeApiControlsProvider);
-
     return Scaffold(
       appBar: AppBar(title: Text('settings.title'.tr())),
       body: ListView(
@@ -186,43 +182,12 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text('settings.notification_subtitle'.tr()),
           ),
           SizedBox(height: 18.h),
-          Text('settings.fake_api_mode'.tr(), style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-          SizedBox(height: 8.h),
-          Text(
-            'settings.fake_api_help'.tr(),
-            style: context.textTheme.bodySmall?.copyWith(color: context.colors.onSurfaceVariant),
-          ),
-          SizedBox(height: 10.h),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SegmentedButton<FakeApiFailureMode>(
-              segments: [
-              ButtonSegment(value: FakeApiFailureMode.none, label: Text('settings.api_working'.tr()), icon: const Icon(Icons.cloud_done_outlined)),
-                ButtonSegment(value: FakeApiFailureMode.offline, label: Text('settings.api_offline'.tr()), icon: const Icon(Icons.wifi_off_outlined)),
-                ButtonSegment(value: FakeApiFailureMode.serverError, label: Text('settings.api_server'.tr()), icon: const Icon(Icons.error_outline)),
-              ],
-              selected: {fakeApi.failureMode},
-              onSelectionChanged: (value) {
-                final mode = value.first;
-                ref.read(fakeApiControlsProvider.notifier).setFailureMode(mode);
-                ref.invalidate(newsProvider);
-                ref.read(portalControllerProvider.notifier).load();
-                final message = switch (mode) {
-                  FakeApiFailureMode.none => 'settings.api_working_message'.tr(),
-                  FakeApiFailureMode.offline => 'settings.api_offline_message'.tr(),
-                  FakeApiFailureMode.serverError => 'settings.api_server_message'.tr(),
-                };
-                context.showSuccessSnackBar(message);
-              },
-            ),
-          ),
-          SizedBox(height: 14.h),
           Card(
             color: context.colors.surfaceContainerLowest,
             child: ListTile(
               leading: const Icon(Icons.http_outlined),
               title: Text('settings.api_base_url'.tr()),
-              subtitle: Text(dotenv.get('API_BASE_URL', fallback: 'settings.fake_api_enabled'.tr())),
+              subtitle: Text(dotenv.get('API_BASE_URL', fallback: '')),
             ),
           ),
           ListTile(

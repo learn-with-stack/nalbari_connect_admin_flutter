@@ -1,4 +1,4 @@
-﻿package com.learnwithstack.nalbari_connect_admin
+package com.nalbari_connect.admin
 
 import io.flutter.embedding.android.FlutterActivity
 

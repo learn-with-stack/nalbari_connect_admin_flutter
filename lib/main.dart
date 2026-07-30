@@ -1,6 +1,7 @@
 import 'src/imports/core_imports.dart';
 import 'src/imports/packages_imports.dart';
 import 'src/app.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
 Future<void> main() async {
@@ -8,6 +9,7 @@ Future<void> main() async {
   
   await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: '.env');
+  await Firebase.initializeApp();
   
   await AppConfig.init();
   await NotificationService.instance.init();

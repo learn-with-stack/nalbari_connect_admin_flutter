@@ -25,6 +25,7 @@ dependencies:
 
   # Backend â€“ Firebase
   firebase_core: ^4.9.0
+  firebase_auth: ^6.5.2
   firebase_messaging: ^16.3.0
 
   # Backend â€“ Supabase
